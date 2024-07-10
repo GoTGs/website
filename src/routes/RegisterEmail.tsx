@@ -1,4 +1,4 @@
-import { useState, Suspense } from 'react';
+import { useState } from 'react';
 
 import { useNavigate } from 'react-router-dom'
 
@@ -26,9 +26,7 @@ export default function RegisterEmail() {
         <>
             <div className="bg-background-900 min-h-screen min-w-screen flex">
                 <div className='w-1/2 h-full max-lg:hidden'>
-                    <Suspense>
-                        <BurningPage/>
-                    </Suspense>
+                    <BurningPage/>
                 </div>
                 <div className='bg-background-950 min-h-full w-1/2 flex items-center justify-center relative max-lg:w-full'>
                     <Button onClick={() => navigate("/login")} className='absolute top-8 right-8 bg-secondary-800 hover:bg-secondary-900 px-8 py-6 text-text-50 font-bold text-xl'>Login</Button>

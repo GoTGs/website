@@ -1,5 +1,3 @@
-import { Suspense } from 'react';
-
 import { useNavigate } from 'react-router-dom'
 
 import BurningPage from '../components/animations/BurningPage';
@@ -14,9 +12,7 @@ export default function Login() {
         <>
             <div className="bg-background-900 min-h-screen min-w-screen flex">
                 <div className='w-1/2 h-full max-lg:hidden'>
-                    <Suspense>
-                        <BurningPage />
-                    </Suspense>
+                    <BurningPage />
                 </div>
                 <div className='bg-background-950 min-h-full w-1/2 flex items-center justify-center relative max-lg:w-full'>
 

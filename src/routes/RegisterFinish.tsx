@@ -1,4 +1,4 @@
-import { useEffect, useState, Suspense } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useSearchParams, useNavigate } from 'react-router-dom'
 
@@ -36,9 +36,7 @@ export default function RegisterFinish() {
         <>
             <div className="bg-background-900 min-h-screen min-w-screen flex">
                 <div className='w-1/2 h-full max-lg:hidden'>
-                    <Suspense>
-                        <BurningPage />
-                    </Suspense>
+                    <BurningPage />
                 </div>
                 <div className='bg-background-950 min-h-full w-1/2 flex items-center justify-center relative max-lg:w-full'>
                     <ArrowLeft onClick={() => navigate("/register")} className='absolute left-5 top-8 text-text-50 w-16 h-16 hover:scale-105 active:scale-100 duration-100 cursor-pointer'/>
