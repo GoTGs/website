@@ -1,5 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 
+import { AnimationProvider } from "./context/AnimationContext"
+
 import Home from "./routes/Home"
 import RegisterEmail from "./routes/RegisterEmail"
 import RegisterFinish from "./routes/RegisterFinish"
@@ -14,7 +16,9 @@ function App() {
   ])
 
   return (
-    <RouterProvider router={BrowserRouter}/>
+    <AnimationProvider>
+      <RouterProvider router={BrowserRouter}/>
+    </AnimationProvider>
   )
 }
 

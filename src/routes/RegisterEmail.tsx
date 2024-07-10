@@ -1,6 +1,6 @@
 import { useState, Suspense } from 'react';
 
-// import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import BurningPage from '../components/animations/BurningPage';
 
@@ -8,9 +8,10 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 
 export default function RegisterEmail() {
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
 
     const [email, setEmail] = useState('')
+    // const [riveFileUrl, setRiveFileUrl] = useState(null);
 
     const handleSignUp = (e: any) => {
         e.preventDefault()
@@ -19,8 +20,8 @@ export default function RegisterEmail() {
             return;
         }
         
-        // navigate('/register/finish?email=' + email)
-        window.location.href = '/register/finish?email=' + email
+        navigate('/register/finish?email=' + email)
+        // window.location.href = '/register/finish?email=' + email
     }
 
     return (
@@ -32,7 +33,7 @@ export default function RegisterEmail() {
                     </Suspense>
                 </div>
                 <div className='bg-background-950 min-h-full w-1/2 flex items-center justify-center relative max-lg:w-full'>
-                    <Button onClick={() => window.location.href = "/login"} className='absolute top-8 right-8 bg-secondary-800 hover:bg-secondary-900 px-8 py-6 text-text-50 font-bold text-xl'>Login</Button>
+                    <Button onClick={() => navigate("/login")} className='absolute top-8 right-8 bg-secondary-800 hover:bg-secondary-900 px-8 py-6 text-text-50 font-bold text-xl'>Login</Button>
                     <div className='w-[40%] flex flex-col gap-5'>
                         <div className='flex flex-col gap-3 items-center'>
                             <h1 className='text-text-50 font-bold text-3xl'>Create an account</h1>

@@ -1,13 +1,29 @@
+import { useContext, useEffect } from 'react';
 import { useRive } from '@rive-app/react-canvas';
+import { AnimationContext } from '../../context/AnimationContext';
 
 export default function BurningPage() {
-    const { RiveComponent } = useRive({
-        src: '/burning-page.riv',
-        autoplay: true,
-        stateMachines: 'burning-page'
-    });
+  const context = useContext(AnimationContext);
 
-    return (
-        <RiveComponent className='w-full h-screen'/>
-    )
-}
+  if (!context) {
+    throw new Error('BurningPage must be used within an AnimationProvider');
+  }
+
+  const { animations, fetchAnimation } = context;
+
+  useEffect(() => {
+    fetchAnimation('burning-page', '/burning-page.riv');
+  }, [fetchAnimation]);
+
+  const { RiveComponent } = useRive({
+    src: animations['burning-page'] || '',
+    autoplay: true,
+    stateMachines: 'burning-page',
+  });
+
+  return animations['burning-page'] ? (
+    <RiveComponent className="w-full h-screen" />
+  ) : (
+    <div>Loading...</div>
+  );
+};
