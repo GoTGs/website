@@ -1,6 +1,6 @@
 import { useEffect, useState, Suspense } from 'react'
 
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 
 import BurningPage from '../components/animations/BurningPage';
 
@@ -9,14 +9,15 @@ import { Input } from '../components/ui/input';
 import { ArrowLeft } from 'lucide-react'
 
 export default function RegisterFinish() {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const [searchParams] = useSearchParams();
 
     const [ userData, setUserData ] = useState<{email: string, password: string, confirmPassword: string}>()
 
     useEffect(() => {
         if (!searchParams.has('email')){
-            navigate('/register')
+            // navigate('/register')
+            window.location.href = '/register'
         }
 
         setUserData({email: searchParams.get('email')!, password: '', confirmPassword: ''})
@@ -41,9 +42,9 @@ export default function RegisterFinish() {
                     </Suspense>
                 </div>
                 <div className='bg-background-950 min-h-full w-1/2 flex items-center justify-center relative max-lg:w-full'>
-                    <ArrowLeft onClick={() => navigate('/register')} className='absolute left-5 top-8 text-text-50 w-16 h-16 hover:scale-105 active:scale-100 duration-100 cursor-pointer'/>
+                    <ArrowLeft onClick={() => window.location.href = "/register"} className='absolute left-5 top-8 text-text-50 w-16 h-16 hover:scale-105 active:scale-100 duration-100 cursor-pointer'/>
 
-                    <Button onClick={() => navigate('/login')} className='absolute top-8 right-8 bg-secondary-800 hover:bg-secondary-900 px-8 py-6 text-text-50 font-bold text-xl'>Login</Button>
+                    <Button onClick={() => window.location.href = "/login"} className='absolute top-8 right-8 bg-secondary-800 hover:bg-secondary-900 px-8 py-6 text-text-50 font-bold text-xl'>Login</Button>
                     <div className='w-[40%] flex flex-col gap-5'>
                         <div className='flex flex-col gap-3 items-center'>
                             <h1 className='text-text-50 font-bold text-3xl'>Finish account</h1>
