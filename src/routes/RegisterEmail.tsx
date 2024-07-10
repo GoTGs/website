@@ -11,7 +11,6 @@ export default function RegisterEmail() {
     const navigate = useNavigate();
 
     const [email, setEmail] = useState('')
-    // const [riveFileUrl, setRiveFileUrl] = useState(null);
 
     const handleSignUp = (e: any) => {
         e.preventDefault()
@@ -21,7 +20,6 @@ export default function RegisterEmail() {
         }
         
         navigate('/register/finish?email=' + email)
-        // window.location.href = '/register/finish?email=' + email
     }
 
     return (

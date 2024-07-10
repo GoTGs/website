@@ -17,7 +17,6 @@ export default function RegisterFinish() {
     useEffect(() => {
         if (!searchParams.has('email')){
             navigate('/register')
-            // window.location.href = '/register'
         }
 
         setUserData({email: searchParams.get('email')!, password: '', confirmPassword: ''})

@@ -21,9 +21,7 @@ export default function BurningPage() {
     stateMachines: 'burning-page',
   });
 
-  return animations['burning-page'] ? (
+  return (
     <RiveComponent className="w-full h-screen" />
-  ) : (
-    <div>Loading...</div>
-  );
+  )
 };
