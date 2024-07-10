@@ -1,3 +1,5 @@
+const { transform } = require('typescript');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
@@ -18,44 +20,71 @@ module.exports = {
     },
     extend: {
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+        'text': {
+          50: '#f3f1f3',
+          100: '#e6e4e7',
+          200: '#cdc8d0',
+          300: '#b4adb8',
+          400: '#9b92a0',
+          500: '#827788',
+          600: '#685f6d',
+          700: '#4e4752',
+          800: '#342f37',
+          900: '#1a181b',
+          950: '#0d0c0e',
         },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+        'background': {
+          50: '#f2eff5',
+          100: '#e6dfec',
+          200: '#ccbfd9',
+          300: '#b29fc6',
+          400: '#9980b3',
+          500: '#7f609f',
+          600: '#664d80',
+          700: '#4c3960',
+          800: '#332640',
+          900: '#191320',
+          950: '#0d0a10',
         },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+        'primary': {
+          50: '#f2edf8',
+          100: '#e5daf1',
+          200: '#cbb6e2',
+          300: '#b091d4',
+          400: '#966cc6',
+          500: '#7c47b8',
+          600: '#633993',
+          700: '#4a2b6e',
+          800: '#321d49',
+          900: '#190e25',
+          950: '#0c0712',
         },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+        'secondary': {
+          50: '#f2ebfa',
+          100: '#e4d6f5',
+          200: '#caaeea',
+          300: '#af85e0',
+          400: '#955dd5',
+          500: '#7a34cb',
+          600: '#622aa2',
+          700: '#491f7a',
+          800: '#311551',
+          900: '#180a29',
+          950: '#0c0514',
         },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+        'accent': {
+          50: '#f2e9fc',
+          100: '#e4d2f9',
+          200: '#c9a6f2',
+          300: '#af79ec',
+          400: '#944ce6',
+          500: '#7920df',
+          600: '#6119b3',
+          700: '#491386',
+          800: '#300d59',
+          900: '#18062d',
+          950: '#0c0316',
         },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
-        },
-      },
-      borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
         "accordion-down": {
