@@ -12,7 +12,7 @@ export default function RegisterFinish() {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
 
-    const [ userData, setUserData ] = useState<{email: string, password: string, confirmPassword: string}>()
+    const [ userData, setUserData ] = useState<{email: string, password: string, confirmPassword: string} | null>(null)
 
     useEffect(() => {
         if (!searchParams.has('email')){
@@ -21,6 +21,13 @@ export default function RegisterFinish() {
 
         setUserData({email: searchParams.get('email')!, password: '', confirmPassword: ''})
     }, [])
+
+    const handlePassword = (e: any) => {
+        setUserData(prev => ({
+            ...prev!,
+            [e.target.name]: e.target.value
+        }))
+    }
 
     const handleFinish = (e: any) => {
         e.preventDefault()
@@ -49,10 +56,8 @@ export default function RegisterFinish() {
                         </div>
                         <form onSubmit={handleFinish} className='flex flex-col gap-5'>
                             <div className='flex gap-3 flex-col'>
-                                <Input onChange={(e) => setUserData((prev) => {return {...prev!, password: e.target.value}})} 
-                                    type='password' placeholder='Enter password' className='text-white focus:outline-none border-text-400'/>
-                                <Input onChange={(e) => setUserData((prev) => {return {...prev!, confirmPassword: e.target.value}})}
-                                    type='password' placeholder='Confirm password' className='text-white focus:outline-none border-text-400'/>
+                                <Input onChange={handlePassword} name='password' type='password' placeholder='Enter password' className='text-white focus:outline-none border-text-400'/>
+                                <Input onChange={handlePassword} name='confirmPassword' type='password' placeholder='Confirm password' className='text-white focus:outline-none border-text-400'/>
                             </div>
                             <Button type='submit' className='bg-secondary-800 hover:bg-secondary-900 px-8 py-6 text-text-50 font-bold  text-xl'>Finish account</Button>
                         </form>
