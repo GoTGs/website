@@ -32,8 +32,8 @@ export default function RegisterEmail() {
                     <Button onClick={() => navigate("/login")} className='absolute top-8 right-8 bg-secondary-800 hover:bg-secondary-900 px-8 py-6 text-text-50 font-bold text-xl'>Login</Button>
                     <div className='w-[40%] flex flex-col gap-5'>
                         <div className='flex flex-col gap-3 items-center'>
-                            <h1 className='text-text-50 font-bold text-3xl'>Create an account</h1>
-                            <p className='text-text-400'>Enter your email below to create your account</p>
+                            <h1 className='text-text-50 font-bold text-3xl text-center'>Create an account</h1>
+                            <p className='text-text-400 text-center'>Enter your email below to create your account</p>
                         </div>
                         <form onSubmit={handleSignUp} className='w-full flex flex-col gap-5'>
                             <Input onChange={(e) => {setEmail(e.target.value)}} type='email' placeholder='Enter email' className='text-white focus:outline-none border-text-400'/>

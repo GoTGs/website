@@ -19,8 +19,8 @@ export default function Login() {
                     <Button onClick={() => navigate("/register")} className='absolute top-8 right-8 bg-secondary-800 hover:bg-secondary-900 px-8 py-6 text-text-50 font-bold text-xl'>Register</Button>
                     <div className='w-[40%] flex flex-col gap-5'>
                         <div className='flex flex-col gap-3 items-center'>
-                            <h1 className='text-text-50 font-bold text-3xl'>Login</h1>
-                            <p className='text-text-400'>Enter email and password to login to your account</p>
+                            <h1 className='text-text-50 font-bold text-3xl text-center'>Login</h1>
+                            <p className='text-text-400 text-center'>Enter email and password to login to your account</p>
                         </div>
                         <form className='flex flex-col gap-5'>
                             <div className='flex gap-3 flex-col'>

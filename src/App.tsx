@@ -6,6 +6,7 @@ import Home from "./routes/Home"
 import RegisterEmail from "./routes/RegisterEmail"
 import RegisterFinish from "./routes/RegisterFinish"
 import Login from "./routes/Login"
+import Dashboard from "./routes/Dashboard"
 
 function App() {
   const BrowserRouter = createBrowserRouter([
@@ -13,6 +14,7 @@ function App() {
     { path: '/register', element: <RegisterEmail /> },
     { path: '/register/finish', element: <RegisterFinish /> },
     { path: '/login', element: <Login /> },
+    { path: '/dashboard', element: <Dashboard /> },
   ])
 
   return (

@@ -6,6 +6,7 @@ import BurningPage from '../components/animations/BurningPage';
 
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
+
 import { ArrowLeft } from 'lucide-react'
 
 export default function RegisterFinish() {
@@ -51,8 +52,8 @@ export default function RegisterFinish() {
                     <Button onClick={() => navigate("/login")} className='absolute top-8 right-8 bg-secondary-800 hover:bg-secondary-900 px-8 py-6 text-text-50 font-bold text-xl'>Login</Button>
                     <div className='w-[40%] flex flex-col gap-5'>
                         <div className='flex flex-col gap-3 items-center'>
-                            <h1 className='text-text-50 font-bold text-3xl'>Finish account</h1>
-                            <p className='text-text-400'>Enter password to finilize account</p>
+                            <h1 className='text-text-50 font-bold text-center text-3xl'>Finish account</h1>
+                            <p className='text-text-400 text-center'>Enter password to finilize account</p>
                         </div>
                         <form onSubmit={handleFinish} className='flex flex-col gap-5'>
                             <div className='flex gap-3 flex-col'>
