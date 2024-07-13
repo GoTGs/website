@@ -25,7 +25,7 @@ export default function RegisterEmail() {
     return (
         <>
             <div className="bg-background-900 min-h-screen min-w-screen flex">
-                <div className='w-1/2 h-full max-lg:hidden'>
+                <div className='w-1/2 h-full max-lg:absolute max-lg:left-[-1000px]'>
                     <BurningPage/>
                 </div>
                 <div className='bg-background-950 min-h-full w-1/2 flex items-center justify-center relative max-lg:w-full'>
