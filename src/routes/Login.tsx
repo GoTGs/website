@@ -16,7 +16,7 @@ export default function Login() {
                 </div>
                 <div className='bg-background-950 min-h-full w-1/2 flex items-center justify-center relative max-lg:w-full'>
 
-                    <Button onClick={() => navigate("/register")} className='absolute top-8 right-8 bg-secondary-800 hover:bg-secondary-900 px-8 py-6 text-text-50 font-bold text-xl'>Register</Button>
+                    <Button variant="outline" onClick={() => navigate("/register")} className='absolute top-8 right-8 hover:bg-secondary-900 px-8 py-6 text-text-50 font-bold text-xl'>Register</Button>
                     <div className='w-[40%] flex flex-col gap-5'>
                         <div className='flex flex-col gap-3 items-center'>
                             <h1 className='text-text-50 font-bold text-3xl text-center'>Login</h1>
@@ -27,7 +27,7 @@ export default function Login() {
                                 <Input type='email' placeholder='Enter password' className='text-white focus:outline-none border-text-400'/>
                                 <Input type='password' placeholder='Confirm password' className='text-white focus:outline-none border-text-400'/>
                             </div>
-                            <Button type='submit' className='bg-secondary-800 hover:bg-secondary-900 px-8 py-6 text-text-50 font-bold  text-xl'>Login</Button>
+                            <Button type='submit' className='bg-primary-800 hover:bg-primary-900 px-8 py-6 text-text-50 font-bold  text-xl'>Login</Button>
                         </form>
                     </div>
                 </div>

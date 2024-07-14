@@ -22,7 +22,7 @@ export default function Dashboard() {
                 <Nav className={`${!menuOpen? "max-lg:hidden": ""}`}/>
                 
                 <div className="w-full flex flex-col items-center gap-8 overflow-x-hidden">
-                    <div className="w-[70%] h-[200px] bg-secondary-800 rounded-md mt-28 overflow-hidden max-lg:absolute max-lg:left-[-1000px]">
+                    <div className="w-[70%] h-[200px] bg-secondary-900 rounded-md mt-28 overflow-hidden max-lg:absolute max-lg:left-[-1000px]">
                         <RoomAnimation />
                     </div>
 
