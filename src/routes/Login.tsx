@@ -1,12 +1,57 @@
+import { useState } from 'react';
+
 import { useNavigate } from 'react-router-dom'
+import { useMutation } from '@tanstack/react-query';
+
+import { authenticationAPI } from '@/apis/authenticationAPI';
 
 import BurningPage from '../components/animations/BurningPage';
 
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
+import { useToast } from "@/components/ui/use-toast"
 
 export default function Login() {
     const navigate = useNavigate();
+    const { toast } = useToast()
+
+    const [ userData, setUserData ] = useState<{email: string, password: string} | null>(null)
+
+    const loginUserMutation = useMutation({
+        mutationFn: authenticationAPI.signIn,
+        onSuccess: (data) => {
+            localStorage.setItem('token', data.token)
+            navigate('../dashboard', {replace: true})
+        },
+        onError: (error: any) => {
+            toast({
+                variant: "destructive",
+                title: error.response.data.data,
+            })            
+        }
+    })
+
+    const handleUserCredentials = (e: any) => {
+        setUserData(prev => ({
+            ...prev!,
+            [e.target.name]: e.target.value
+        }))
+    }
+
+    const handleLogin = (e: any) => {
+        e.preventDefault()
+
+        if (!userData?.email || !userData?.password) {
+            toast({
+                variant: "destructive",
+                title: "Please enter email and password",
+            })
+
+            return
+        }
+
+        loginUserMutation.mutate(userData)
+    }
 
     return (
         <>
@@ -22,10 +67,10 @@ export default function Login() {
                             <h1 className='text-text-50 font-bold text-3xl text-center'>Login</h1>
                             <p className='text-text-400 text-center'>Enter email and password to login to your account</p>
                         </div>
-                        <form className='flex flex-col gap-5'>
+                        <form onSubmit={handleLogin} className='flex flex-col gap-5'>
                             <div className='flex gap-3 flex-col'>
-                                <Input type='email' placeholder='Enter password' className='text-white focus:outline-none border-text-400'/>
-                                <Input type='password' placeholder='Confirm password' className='text-white focus:outline-none border-text-400'/>
+                                <Input onChange={handleUserCredentials} type='email' name='email' placeholder='Enter email' className='text-white focus:outline-none border-text-400'/>
+                                <Input onChange={handleUserCredentials} type='password' name='password' placeholder='Enter password' className='text-white focus:outline-none border-text-400'/>
                             </div>
                             <Button type='submit' className='bg-primary-800 hover:bg-primary-900 px-8 py-6 text-text-50 font-bold  text-xl'>Login</Button>
                         </form>
