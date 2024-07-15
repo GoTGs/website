@@ -1,4 +1,5 @@
 const { transform } = require('typescript');
+const plugin = require('tailwindcss/plugin');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -19,6 +20,7 @@ module.exports = {
       },
     },
     extend: {
+      backgroundColor: ['label-checked'],
       colors: {
         'text': {
           50: '#f2f2f2',
@@ -102,5 +104,18 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    plugin(({ addVariant, e }) => {
+            addVariant('label-checked', ({ modifySelectors, separator }) => {
+                modifySelectors(
+                    ({ className }) => {
+                        const eClassName = e(`label-checked${separator}${className}`); // escape class
+                        const yourSelector = 'input[type="radio"]'; // your input selector. Could be any
+                        return `${yourSelector}:checked ~ .${eClassName}`; // ~ - CSS selector for siblings
+                    }
+                )
+            })
+      }),
+  ],
 }
