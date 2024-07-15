@@ -19,7 +19,7 @@ export default function RegisterEmail() {
             return;
         }
         
-        navigate('/register/finish?email=' + email)
+        navigate(`/register/finish?email=${email}`)
     }
 
     return (

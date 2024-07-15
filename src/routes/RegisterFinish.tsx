@@ -35,7 +35,7 @@ export default function RegisterFinish() {
     })
 
     useEffect(() => {
-        if (!searchParams.has('email')){
+        if (!searchParams.has('email')) {
             navigate('/register')
         }
 

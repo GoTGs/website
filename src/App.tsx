@@ -10,6 +10,7 @@ import RegisterEmail from "./routes/RegisterEmail"
 import RegisterFinish from "./routes/RegisterFinish"
 import Login from "./routes/Login"
 import Dashboard from "./routes/Dashboard"
+import Assignments from "./routes/Assignments"
 
 const queryClient = new QueryClient()
 
@@ -20,6 +21,7 @@ function App() {
     { path: '/register/finish', element: <RegisterFinish /> },
     { path: '/login', element: <Login /> },
     { path: '/dashboard', element: <Dashboard /> },
+    { path: '/assignments', element: <Assignments /> },
   ])
 
   return (
