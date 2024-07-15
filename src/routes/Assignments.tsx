@@ -39,7 +39,7 @@ export default function Assignments() {
                     </Breadcrumb>
 
 
-                    <h1 className="text-text-300 text-lg mt-4">Your assignments</h1>
+                    <h1 className="text-text-300 text-lg mt-2">Your assignments</h1>
                 </div>
             </div>
         </>

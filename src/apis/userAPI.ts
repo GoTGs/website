@@ -1,4 +1,4 @@
-import { axiosConfig } from "./config/axiosConfig";
+import { axiosConfigUser } from "./config/axiosConfig";
 import axios from "axios";
 
 type User = {
@@ -9,6 +9,6 @@ type User = {
 
 export const userAPI = {
     getUser: async () => {
-        return (await axios.get<User>('/user/get', axiosConfig)).data;
+        return (await axios.get<User>('/user/get', axiosConfigUser)).data;
     }
 };

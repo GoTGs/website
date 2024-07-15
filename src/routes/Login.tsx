@@ -21,7 +21,7 @@ export default function Login() {
         mutationFn: authenticationAPI.signIn,
         onSuccess: (data) => {
             localStorage.setItem('token', data.token)
-            navigate('../dashboard', {replace: true})
+            window.location.href = "/dashboard"
         },
         onError: (error: any) => {
             toast({

@@ -1,4 +1,4 @@
-import { axiosConfig } from "./config/axiosConfig";
+import { axiosConfigAuth } from "./config/axiosConfig";
 import axios from "axios";
 
 export type SignUpData = {
@@ -10,9 +10,9 @@ export type SignUpData = {
 
 export const authenticationAPI = {
     signUp: async (data: SignUpData) => {
-        return (await axios.post('/register', data, axiosConfig));
+        return (await axios.post('/register', data, axiosConfigAuth));
     },
     signIn: async (data: SignUpData) => {
-        return (await axios.post('/login', data, axiosConfig)).data;
+        return (await axios.post('/login', data, axiosConfigAuth)).data;
     }
 };

@@ -1,8 +1,8 @@
 import { useState } from "react"
 
-// import { useQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 
-// import { userAPI } from "@/apis/userAPI"
+import { userAPI } from "@/apis/userAPI"
 
 import RoomCard from "@/components/RoomCard"
 import ProfileAvatar from "@/components/ProfileAvatar"
@@ -12,31 +12,22 @@ import { Menu, Plus } from "lucide-react"
 
 import RoomAnimation from "@/components/animations/RoomAnimation"
 
-// import { useToast } from "@/components/ui/use-toast"
-
 export default function Dashboard() {
-    // const { toast } = useToast()
-
     const [menuOpen, setMenuOpen] = useState(false)
 
-    // const {data, isLoading, error} = useQuery({
-    //     queryKey: ['user'],
-    //     queryFn: userAPI.getUser
-    // })
-
-    // if (error) {
-    //     toast({
-    //         variant: "destructive",
-    //         title: (error as any).response.data.data,
-    //     })            
-    // }
+    const {data, isLoading } = useQuery({
+        queryKey: ['user'],
+        queryFn: userAPI.getUser
+    })
 
     return (
         <>
             <div className="bg-background-950 min-h-screen min-w-screen flex relative">
-                {/* {!isLoading && <ProfileAvatar className="right-5 top-5 absolute" name="Ivan Stoychev" role="student"/>} */}
-                <ProfileAvatar className="right-5 top-5 absolute" name="Ivan Stoychev" role="student"/>
-
+                {
+                    !isLoading? 
+                    <ProfileAvatar className="right-5 top-5 absolute" name={`${data?.first_name} ${data?.last_name}`} role="student"/>:
+                    <ProfileAvatar className="right-5 top-5 absolute" isLoading={true} />
+                }
 
                 <Menu onClick={() => {setMenuOpen(true)}} className="lg:hidden absolute w-12 h-12 top-5 text-text-50 hover:scale-105 active:scale-100 cursor-pointer left-5"/>
                 {menuOpen && <Plus onClick={() => {setMenuOpen(false)}} className="lg:hidden rotate-45 absolute w-12 h-12 top-5 text-text-50 hover:scale-105 active:scale-100 cursor-pointer right-5 z-30"/>}
