@@ -11,6 +11,7 @@ import RegisterFinish from "./routes/RegisterFinish"
 import Login from "./routes/Login"
 import Dashboard from "./routes/Dashboard"
 import Assignments from "./routes/Assignments"
+import Assignment from "./routes/Assignment"
 
 const queryClient = new QueryClient()
 
@@ -22,6 +23,7 @@ function App() {
     { path: '/login', element: <Login /> },
     { path: '/dashboard', element: <Dashboard /> },
     { path: '/assignments', element: <Assignments /> },
+    { path: '/assignment', element: <Assignment /> },
   ])
 
   return (

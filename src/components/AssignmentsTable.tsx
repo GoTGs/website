@@ -1,4 +1,4 @@
-import Assignment from "./Assignment"
+import AssignmentEntry from "./AssignmentEntry"
 
 export default function AssignmentsTable({ className } : {className?: string}) {
     return (
@@ -11,9 +11,9 @@ export default function AssignmentsTable({ className } : {className?: string}) {
                     <h1 className="w-[1%] grow">Score</h1>
                 </div>
 
-                <Assignment title="Exploring the Intricacies of Quantum Computing: How Quantum Mechanics is Revolutionizing Technology and Problem-Solving" dueDate="15-07-2024" status="Todo" score="Not Graded"/>
-                <Assignment title="Revolutionizing Industries: The Power of Artificial Intelligence" dueDate="20-07-2024" status="Completed" score="97%"/>
-                <Assignment title="The Future of Renewable Energy: How Innovative Technologies Are Paving the Way for a Sustainable and Eco-Friendly World" dueDate="18-07-2024" status="Completed" score="Not Graded"/>
+                <AssignmentEntry title="Exploring the Intricacies of Quantum Computing: How Quantum Mechanics is Revolutionizing Technology and Problem-Solving" dueDate="15-07-2024" status="Todo" score="Not Graded" id={1} />
+                <AssignmentEntry title="Revolutionizing Industries: The Power of Artificial Intelligence" dueDate="20-07-2024" status="Completed" score="97%" id={2}/>
+                <AssignmentEntry title="The Future of Renewable Energy: How Innovative Technologies Are Paving the Way for a Sustainable and Eco-Friendly World" dueDate="18-07-2024" status="Completed" score="Not Graded" id={3}/>
             </div>
         </>
     )
