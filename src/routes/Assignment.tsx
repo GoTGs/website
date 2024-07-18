@@ -2,6 +2,9 @@ import { useEffect, useState, useCallback } from "react"
 
 import { useSearchParams, useNavigate } from "react-router-dom"
 import { useDropzone } from 'react-dropzone'
+import { useQuery } from "@tanstack/react-query"
+
+import { classroomAPI } from "@/apis/classroomAPI"
 
 import FileEntry from "@/components/FileEntry"
 
@@ -15,6 +18,7 @@ import {
   } from "@/components/ui/breadcrumb"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function Assignment() {
     const navigate = useNavigate()
@@ -22,6 +26,11 @@ export default function Assignment() {
 
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
     const [assignmentFiles, setAssignmentFiles] = useState<File[]>([])
+
+    const {data: classsroom, isLoading: isLoadingClassroom} = useQuery({
+        queryKey: ['classroom', searchParams.get('assignmentId')],
+        queryFn: () => classroomAPI.getClassroom(searchParams.get('roomId')),
+    })
 
     const onDrop  = useCallback((file: any) => {
         for (let i = 0; i < file.length; i++) {
@@ -50,7 +59,10 @@ export default function Assignment() {
                             </BreadcrumbItem>
                             <BreadcrumbSeparator><p className="text-2xl -translate-y-1 text-text-50">/</p></BreadcrumbSeparator>
                             <BreadcrumbItem>
-                                <BreadcrumbLink onClick={() => navigate(`/assignments?id=${searchParams.get('roomId')}`)} className="text-lg">Methematics</BreadcrumbLink> 
+                                {!isLoadingClassroom?
+                                    <BreadcrumbLink onClick={() => navigate(`/assignments?id=${searchParams.get('roomId')}`)} className="text-lg">{classsroom?.name}</BreadcrumbLink>:
+                                    <Skeleton className="w-[100px] h-6 bg-[#88888850] rounded-lg" />
+                                }
                             </BreadcrumbItem>
                             <BreadcrumbSeparator><p className="text-2xl -translate-y-1 text-text-50">/</p></BreadcrumbSeparator>
                             <BreadcrumbItem>

@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react"
 
 import { useSearchParams, useNavigate } from "react-router-dom"
+import { useQuery } from "@tanstack/react-query"
 
 import AssignmentsTable from "@/components/AssignmentsTable"
+
+import { classroomAPI } from "@/apis/classroomAPI"
 
 import {
     Breadcrumb,
@@ -13,12 +16,18 @@ import {
     BreadcrumbSeparator,
   } from "@/components/ui/breadcrumb"
 import { Label } from "@/components/ui/label"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function Assignments() {
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
     const [filter, setFilter] = useState<string>('all')
+
+    const {data: classsroom, isLoading: isLoadingClassroom} = useQuery({
+        queryKey: ['classroom', searchParams.get('id')],
+        queryFn: () => classroomAPI.getClassroom(searchParams.get('id')),
+    })
 
     useEffect(() => {
         if (!searchParams.has('id')) {
@@ -42,7 +51,10 @@ export default function Assignments() {
                                 </BreadcrumbItem>
                                 <BreadcrumbSeparator><p className="text-2xl -translate-y-1 text-text-50">/</p></BreadcrumbSeparator>
                                 <BreadcrumbItem>
-                                    <BreadcrumbPage className="text-lg text-text-50 font-semibold px-2">Methematics</BreadcrumbPage> 
+                                    {!isLoadingClassroom? 
+                                    <BreadcrumbPage className="text-lg text-text-50 font-semibold px-2">{classsroom?.name}</BreadcrumbPage>: 
+                                    <Skeleton className="w-[100px] h-6 bg-[#88888850] rounded-lg" />
+                                    }
                                 </BreadcrumbItem>
                             </BreadcrumbList>
                         </Breadcrumb>

@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useNavigate } from "react-router-dom"
 
 import { userAPI } from "@/apis/userAPI"
+import { classroomAPI } from "@/apis/classroomAPI"
 
 import RoomCard from "@/components/RoomCard"
 import ProfileAvatar from "@/components/ProfileAvatar"
@@ -17,26 +18,31 @@ export default function Dashboard() {
     const navigate = useNavigate()
     const [menuOpen, setMenuOpen] = useState(false)
 
-    const {data: user, isLoading, error } = useQuery({
+    const {data: user, isLoading: isLoadingUser, error: errorUser } = useQuery({
         queryKey: ['user'],
         queryFn: userAPI.getUser,
     })
 
+    const {data: classrooms, isLoading: isLoadingClassrooms } = useQuery({
+        queryKey: ['classrooms'],
+        queryFn: classroomAPI.getUserClassrooms,
+    })
+
     useEffect(() => {
-        if (error) {
+        if (errorUser) {
             // @ts-ignore
             if (error.response.status === 401) {
                 localStorage.removeItem('token')
                 navigate('/')
             }
         }
-    }, [error])
+    }, [errorUser])
 
     return (
         <>
             <div className="bg-background-950 min-h-screen min-w-screen flex relative">
                 {
-                    !isLoading? 
+                    !isLoadingUser? 
                     <ProfileAvatar className="right-5 top-5 absolute" name={`${user?.first_name} ${user?.last_name}`} role={user?.role}/>:
                     <ProfileAvatar className="right-5 top-5 absolute" isLoading={true} />
                 }
@@ -57,13 +63,13 @@ export default function Dashboard() {
                     </div>
 
                     <div className="w-[80%] gap-8 grid [grid-template-columns:repeat(auto-fill,minmax(300px,1fr))] mb-24">
-                        <RoomCard title="Methematics" id={1}/>
-                        <RoomCard title="Physics" id={2}/>
-                        <RoomCard title="English" id={3}/>
-                        <RoomCard title="Biology" id={4}/>
-                        <RoomCard title="Chemistry" id={5}/>
-                        <RoomCard title="History" id={6}/>
-                        <RoomCard title="Art" id={7}/>
+                        {
+                            isLoadingClassrooms?
+                            <RoomCard isLoading={isLoadingClassrooms}/>:
+                            classrooms?.map((classroom) => {
+                                return <RoomCard key={classroom.id} title={classroom.name} id={classroom.id}/>
+                            })
+                        }
                     </div>
                 </div>
             </div>
