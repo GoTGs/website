@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { useNavigate } from 'react-router-dom'
 
@@ -11,6 +11,12 @@ export default function RegisterEmail() {
     const navigate = useNavigate();
 
     const [email, setEmail] = useState('')
+
+    useEffect(() => {
+        if (localStorage.getItem('token')) {
+            navigate("/dashboard")
+        }
+    }, [])
 
     const handleSignUp = (e: any) => {
         e.preventDefault()

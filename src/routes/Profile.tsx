@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { useNavigate } from "react-router-dom"
 
 import Nav from "@/components/Nav"
 
@@ -24,6 +25,7 @@ import { useToast } from "@/components/ui/use-toast"
 export default function Profile() {
     const queryClient = useQueryClient()    
     const { toast } = useToast()
+    const navigate = useNavigate()
 
     const [menuOpen, setMenuOpen] = useState(false)
 
@@ -35,7 +37,7 @@ export default function Profile() {
     const [userCredentials, setUserCredentials] = useState<SignUpData | null>(null)
 
 
-    const {data: user, isLoading, isSuccess } = useQuery({
+    const {data: user, isLoading, isSuccess, error } = useQuery({
         queryKey: ['user'],
         queryFn: userAPI.getUser,
     })
@@ -46,6 +48,12 @@ export default function Profile() {
             queryClient.invalidateQueries({ queryKey: ['user'] })
         },
         onError: (error: any) => {
+            // @ts-ignore
+            if (error.response.status === 401) {
+                localStorage.removeItem('token')
+                navigate('/')
+            }
+
             toast({
                 variant: "destructive",
                 title: error.response.data.data,
@@ -61,6 +69,12 @@ export default function Profile() {
             setIsConfirmPasswordOppend(true)
         },
         onError: (error: any) => {
+            // @ts-ignore
+            if (error.response.status === 401) {
+                localStorage.removeItem('token')
+                navigate('/')
+            }
+
             toast({
                 variant: "destructive",
                 title: error.response.data.data,
@@ -69,6 +83,14 @@ export default function Profile() {
     })
 
     useEffect(() => {
+        if (error) {
+            // @ts-ignore
+            if (error.response.status === 401) {
+                localStorage.removeItem('token')
+                navigate('/')
+            }
+        }
+
         setNewUser({
             first_name: user?.first_name,
             last_name: user?.last_name,
@@ -137,6 +159,7 @@ export default function Profile() {
         updateUserMutation.mutate(newUser)
         setIsConfirmPasswordOppend(false)
         localStorage.removeItem('token')
+        navigate('/')
     }
 
     return (
@@ -169,11 +192,11 @@ export default function Profile() {
                                 </div>
 
                                 <Button type="submit" className="bg-primary-700 text-text-50 hover:bg-primary-800 font-semibold">Update Profile</Button>
-
                                 <Button onClick={() => {setIsPasswordChangeOpened(true)}} variant="destructive" className="w-full bg-[#e74c4c] hover:bg-[#b43c3c] text-text-50 font-bold" >Change Password</Button>
+                                <Button onClick={() => {localStorage.removeItem('token'); navigate('/')}} variant="destructive" className="w-full bg-[#e74c4c] hover:bg-[#b43c3c] text-text-50 font-bold" >Log out</Button>
                             </div>
 
-                            <div className="w-1/2 flex justify-center items-center">
+                            <div className="w-1/2 flex justify-center items-center flex-col">
                                 <img className="w-1/2 rounded-full" src={`https://ui-avatars.com/api/?name=${user?.first_name + ' ' + user?.last_name}&size=256&background=60494d&color=fff&bold=true`}/>
                             </div>
                         </form>}

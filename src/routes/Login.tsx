@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query';
@@ -30,6 +30,12 @@ export default function Login() {
             })            
         }
     })
+
+    useEffect(() => {
+        if (localStorage.getItem('token')) {
+            navigate("/dashboard")
+        }
+    }, [])
 
     const handleUserCredentials = (e: any) => {
         setUserData(prev => ({

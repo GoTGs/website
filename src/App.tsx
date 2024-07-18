@@ -5,6 +5,8 @@ import { AnimationProvider } from "./context/AnimationContext"
 
 import { Toaster } from "@/components/ui/toaster"
 
+import Protected from "./components/Protected"
+
 import Home from "./routes/Home"
 import RegisterEmail from "./routes/RegisterEmail"
 import RegisterFinish from "./routes/RegisterFinish"
@@ -22,10 +24,10 @@ function App() {
     { path: '/register', element: <RegisterEmail /> },
     { path: '/register/finish', element: <RegisterFinish /> },
     { path: '/login', element: <Login /> },
-    { path: '/dashboard', element: <Dashboard /> },
-    { path: '/assignments', element: <Assignments /> },
-    { path: '/assignment', element: <Assignment /> },
-    { path: '/profile', element: <Profile /> },
+    { path: '/dashboard', element: <Protected> <Dashboard /> </Protected>},
+    { path: '/assignments', element: <Protected> <Assignments /> </Protected>},
+    { path: '/assignment', element: <Protected> <Assignment /> </Protected>},
+    { path: '/profile', element: <Protected> <Profile /> </Protected>},
   ])
 
   return (

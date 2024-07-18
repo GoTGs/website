@@ -35,6 +35,10 @@ export default function RegisterFinish() {
     })
 
     useEffect(() => {
+        if (localStorage.getItem('token')) {
+            navigate("/dashboard")
+        }
+
         if (!searchParams.has('email')) {
             navigate('/register')
         }

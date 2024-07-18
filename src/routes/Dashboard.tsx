@@ -1,6 +1,7 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 import { useQuery } from "@tanstack/react-query"
+import { useNavigate } from "react-router-dom"
 
 import { userAPI } from "@/apis/userAPI"
 
@@ -13,12 +14,23 @@ import { Menu, Plus } from "lucide-react"
 import RoomAnimation from "@/components/animations/RoomAnimation"
 
 export default function Dashboard() {
+    const navigate = useNavigate()
     const [menuOpen, setMenuOpen] = useState(false)
 
-    const {data: user, isLoading } = useQuery({
+    const {data: user, isLoading, error } = useQuery({
         queryKey: ['user'],
-        queryFn: userAPI.getUser
+        queryFn: userAPI.getUser,
     })
+
+    useEffect(() => {
+        if (error) {
+            // @ts-ignore
+            if (error.response.status === 401) {
+                localStorage.removeItem('token')
+                navigate('/')
+            }
+        }
+    }, [error])
 
     return (
         <>
