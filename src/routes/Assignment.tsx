@@ -22,7 +22,6 @@ export default function Assignment() {
 
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
     const [assignmentFiles, setAssignmentFiles] = useState<File[]>([])
-    // const []
 
     const onDrop  = useCallback((file: any) => {
         for (let i = 0; i < file.length; i++) {
@@ -51,7 +50,7 @@ export default function Assignment() {
                             </BreadcrumbItem>
                             <BreadcrumbSeparator><p className="text-2xl -translate-y-1 text-text-50">/</p></BreadcrumbSeparator>
                             <BreadcrumbItem>
-                                <BreadcrumbLink onClick={() => navigate(`/assignments?id=${searchParams.get('roomId')}`)} className="text-lg">Assignments</BreadcrumbLink> 
+                                <BreadcrumbLink onClick={() => navigate(`/assignments?id=${searchParams.get('roomId')}`)} className="text-lg">Methematics</BreadcrumbLink> 
                             </BreadcrumbItem>
                             <BreadcrumbSeparator><p className="text-2xl -translate-y-1 text-text-50">/</p></BreadcrumbSeparator>
                             <BreadcrumbItem>

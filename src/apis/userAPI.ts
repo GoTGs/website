@@ -4,11 +4,15 @@ import axios from "axios";
 type User = {
     email: string,
     first_name: string,
-    last_name: string
+    last_name: string,
+    role: string
 }
 
 export const userAPI = {
     getUser: async () => {
         return (await axios.get<User>('/user/get', axiosConfigUser)).data;
-    }
+    },
+    updateUser: async (data: any) => {
+        return (await axios.put('/user/update', data, axiosConfigUser)).data
+    },
 };

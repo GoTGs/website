@@ -12,6 +12,7 @@ import Login from "./routes/Login"
 import Dashboard from "./routes/Dashboard"
 import Assignments from "./routes/Assignments"
 import Assignment from "./routes/Assignment"
+import Profile from "./routes/Profile"
 
 const queryClient = new QueryClient()
 
@@ -24,6 +25,7 @@ function App() {
     { path: '/dashboard', element: <Dashboard /> },
     { path: '/assignments', element: <Assignments /> },
     { path: '/assignment', element: <Assignment /> },
+    { path: '/profile', element: <Profile /> },
   ])
 
   return (

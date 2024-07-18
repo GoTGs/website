@@ -28,7 +28,6 @@ export default function Assignments() {
 
     const handleFilterSelect = (e: any) => {
         setFilter(e.target.value)
-        console.log(e.target.value)
     }
 
     return (
@@ -52,21 +51,23 @@ export default function Assignments() {
                         <h1 className="text-text-300 text-lg mt-2">Your assignments</h1>
                     </div>
 
-                    <div className="text-text-50 flex">
-                            <Label htmlFor="all" className="cursor-pointer border-y border-l border-text-300 rounded-l-md">
-                                <input onChange={handleFilterSelect} type="radio" value="all" id="all" className="hidden" name="filter" checked={filter === 'all'} />
-                                <div className="label-checked:bg-background-800 hover:bg-background-700 p-3 rounded-l-md">All</div>
-                            </Label>
+                    <div className="relative flex w-full text-text-50">
+                        <div className="flex">
+                                <Label htmlFor="all" className="cursor-pointer border-y border-l border-text-300 rounded-l-md">
+                                    <input onChange={handleFilterSelect} type="radio" value="all" id="all" className="hidden" name="filter" checked={filter === 'all'} />
+                                    <div className="label-checked:bg-background-800 hover:bg-background-700 p-3 rounded-l-md">All</div>
+                                </Label>
 
-                            <Label htmlFor="completed" className="cursor-pointer border-y border-text-300">
-                                <input onChange={handleFilterSelect} type="radio" value="completed" id="completed" name="filter" className="hidden" checked={filter === 'completed'} />
-                                <div className="label-checked:bg-background-800 hover:bg-background-700 p-3">Completed</div>
-                            </Label>
+                                <Label htmlFor="completed" className="cursor-pointer border-y border-text-300">
+                                    <input onChange={handleFilterSelect} type="radio" value="completed" id="completed" name="filter" className="hidden" checked={filter === 'completed'} />
+                                    <div className="label-checked:bg-background-800 hover:bg-background-700 p-3">Completed</div>
+                                </Label>
 
-                            <Label htmlFor="todo" className="cursor-pointer border-y border-r border-text-300 rounded-r-md">
-                                <input onChange={handleFilterSelect} type="radio" value="todo" id="todo" name="filter" className="hidden" checked={filter === 'todo'} />
-                                <div className="label-checked:bg-background-800 p-3 rounded-r-md hover:bg-background-700">Todo</div>
-                            </Label>
+                                <Label htmlFor="todo" className="cursor-pointer border-y border-r border-text-300 rounded-r-md">
+                                    <input onChange={handleFilterSelect} type="radio" value="todo" id="todo" name="filter" className="hidden" checked={filter === 'todo'} />
+                                    <div className="label-checked:bg-background-800 p-3 rounded-r-md hover:bg-background-700">Todo</div>
+                                </Label>
+                        </div>
                     </div>
 
                     <AssignmentsTable className="pb-5"/>
