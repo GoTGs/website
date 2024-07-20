@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "react-router-dom"
 
 import { userAPI } from "@/apis/userAPI"
@@ -10,13 +10,26 @@ import RoomCard from "@/components/RoomCard"
 import ProfileAvatar from "@/components/ProfileAvatar"
 import Nav from "@/components/Nav"
 
-import { Menu, Plus } from "lucide-react"
-
 import RoomAnimation from "@/components/animations/RoomAnimation"
 
+import { Menu, Plus } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+
 export default function Dashboard() {
+    const queryClient = useQueryClient()
     const navigate = useNavigate()
-    const [menuOpen, setMenuOpen] = useState(false)
+
+    const [classroomName, setClassroomName] = useState<string>('')
+    const [menuOpen, setMenuOpen] = useState<boolean>(false)
+    const [classroomDialogOpen, setClassroomDialogOpen] = useState<boolean>(false)
 
     const {data: user, isLoading: isLoadingUser, error: errorUser } = useQuery({
         queryKey: ['user'],
@@ -26,6 +39,13 @@ export default function Dashboard() {
     const {data: classrooms, isLoading: isLoadingClassrooms } = useQuery({
         queryKey: ['classrooms'],
         queryFn: classroomAPI.getUserClassrooms,
+    })
+    
+    const createClassroomMutation = useMutation({
+        mutationFn: classroomAPI.createClassroom, 
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['classrooms'] })
+        }
     })
 
     useEffect(() => {
@@ -37,6 +57,13 @@ export default function Dashboard() {
             }
         }
     }, [errorUser])
+
+    const handleCreateClassroom = async (e: any) => {
+        e.preventDefault()
+
+        createClassroomMutation.mutate(classroomName)
+        setClassroomDialogOpen(false)
+    }
 
     return (
         <>
@@ -69,6 +96,29 @@ export default function Dashboard() {
                             classrooms?.map((classroom) => {
                                 return <RoomCard key={classroom.id} title={classroom.name} id={classroom.id}/>
                             })
+                        }
+
+                        {
+                            user?.role === 'admin' &&
+                            <Dialog open={classroomDialogOpen} onOpenChange={setClassroomDialogOpen}>
+                                <DialogTrigger>
+                                    <div className="text-text-50 bg-[#88888850] border-2 border-[#88888850] hover:border-[#888888] flex items-center justify-center w-full overflow-hidden h-[200px] active:scale-100 cursor-pointer rounded-xl relative hover:scale-105 duration-100">
+                                        <h1 className="z-10 font-bold text-2xl">Create new classroom</h1>
+                                    </div>
+                                </DialogTrigger>
+                                <DialogContent className="bg-background-950 text-text-50">
+                                    <DialogHeader>
+                                        <DialogTitle>Create new classroom</DialogTitle>
+                                    </DialogHeader>
+
+                                    <form onSubmit={handleCreateClassroom} className="mt-4 flex w-full justify-center items-center">
+                                        <div className="flex flex-col gap-3 w-[80%]">
+                                            <Input onChange={(e) => setClassroomName(e.target.value)} placeholder="Enter organisation name" />
+                                            <Button type="submit" className="bg-primary-700 text-text-50 hover:bg-primary-800 font-semibold w-full">Confirm</Button>
+                                        </div>
+                                    </form>
+                                </DialogContent>
+                            </Dialog>
                         }
                     </div>
                 </div>

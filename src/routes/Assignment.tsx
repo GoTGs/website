@@ -102,7 +102,8 @@ export default function Assignment() {
                                 </div>
                             </div>
 
-                            {   uploadedFiles &&
+                            {   
+                                uploadedFiles &&
                                 <div className="flex flex-col gap-1">
                                     {
                                         uploadedFiles.map((item, index) => {

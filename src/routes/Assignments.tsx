@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query"
 import AssignmentsTable from "@/components/AssignmentsTable"
 
 import { classroomAPI } from "@/apis/classroomAPI"
+import { userAPI } from "@/apis/userAPI"
 
 import {
     Breadcrumb,
@@ -17,6 +18,7 @@ import {
   } from "@/components/ui/breadcrumb"
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Button } from "@/components/ui/button"
 
 export default function Assignments() {
     const navigate = useNavigate()
@@ -27,6 +29,11 @@ export default function Assignments() {
     const {data: classsroom, isLoading: isLoadingClassroom} = useQuery({
         queryKey: ['classroom', searchParams.get('id')],
         queryFn: () => classroomAPI.getClassroom(searchParams.get('id')),
+    })
+
+    const {data: user, isLoading: isLoadingUser} = useQuery({
+        queryKey: ['user'],
+        queryFn: userAPI.getUser,
     })
 
     useEffect(() => {
@@ -80,6 +87,12 @@ export default function Assignments() {
                                     <div className="label-checked:bg-background-800 p-3 rounded-r-md hover:bg-background-700">Todo</div>
                                 </Label>
                         </div>
+
+                        {
+                            !isLoadingUser && 
+                            user?.role === 'admin' || user?.role === 'teacher'?
+                            <Button onClick={() => navigate(`/members?roomId=${searchParams.get('id')}`)} className="text-text-50 absolute right-0 px-6 py-4 bg-primary-700 hover:bg-primary-800">Members</Button>: null
+                        }
                     </div>
 
                     <AssignmentsTable className="pb-5"/>

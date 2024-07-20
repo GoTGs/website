@@ -1,7 +1,8 @@
 import { axiosConfigUser } from "./config/axiosConfig";
 import axios from "axios";
 
-type User = {
+export type User = {
+    id: number,
     email: string,
     first_name: string,
     last_name: string,
@@ -14,5 +15,8 @@ export const userAPI = {
     },
     updateUser: async (data: any) => {
         return (await axios.put('/user/update', data, axiosConfigUser)).data
+    },
+    getUsers: async () => {
+        return (await axios.get<User[]>('/user/get/all', axiosConfigUser)).data;
     },
 };

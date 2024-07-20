@@ -204,7 +204,7 @@ export default function Profile() {
                 </div>
             </div>
 
-            <Dialog open={isPasswordChangeDiologOpened}>
+            <Dialog open={isPasswordChangeDiologOpened} onOpenChange={setIsPasswordChangeOpened}>
                 <DialogContent className="w-full flex justify-center items-center flex-col bg-background-950 text-text-50">
                     <DialogHeader>
                         <DialogTitle>Login to change password</DialogTitle>
@@ -221,7 +221,7 @@ export default function Profile() {
                 </DialogContent>
             </Dialog>
 
-            <Dialog open={isConfirmPasswordOppend}>
+            <Dialog open={isConfirmPasswordOppend} onOpenChange={setIsConfirmPasswordOppend}>
                 <DialogContent className="w-full flex justify-center items-center flex-col bg-background-950 text-text-50">
                     <DialogHeader>
                         <DialogTitle>Enter your new password</DialogTitle>
