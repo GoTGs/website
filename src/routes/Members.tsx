@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
 import { useNavigate, useSearchParams } from "react-router-dom"
 
 import MemberEntry from "@/components/MemberEntry"
@@ -25,10 +25,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { useToast } from "@/components/ui/use-toast"
 
 export default function Members() {
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
+    const queryClient = useQueryClient()
+    const { toast } = useToast()
 
     const [addMemberDialogOpen, setAddMemberDialogOpen] = useState<boolean>(false)
     const [addMemberEmail, setAddMemberEmail] = useState<string>('')
@@ -53,8 +56,21 @@ export default function Members() {
         queryFn: userAPI.getUsers,
     })
 
+    const addUserToClassroomMutation = useMutation({
+        mutationFn: (email: string) => classroomAPI.addUserToClassroom(searchParams.get('roomId'), email),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['members', searchParams.get('roomId')] })
+        },
+        onError: (error) => {
+            toast({
+                variant: "destructive",
+                // @ts-ignore
+                title: error.response.data.data,
+            })
+        }
+    })
+
     const filteredUsers = !isLoadingUsers && allUsers?.filter((user) => user.email.toLowerCase().includes(addMemberEmail.toLowerCase()))
-    console.log(filteredUsers)
  
     useEffect(() => {
         if (!searchParams.has('roomId')) {
@@ -65,6 +81,15 @@ export default function Members() {
             navigate('/dashboard')
         }
     }, [user])
+
+    const handleAddMember = (e: any) => {
+        e.preventDefault()
+
+        addUserToClassroomMutation.mutate(addMemberEmail)
+
+        setAddMemberEmail('')
+        setAddMemberDialogOpen(false)
+    }
     
     return (
         <>
@@ -126,9 +151,31 @@ export default function Members() {
                         <DialogTitle>Add member to classroom</DialogTitle>
                     </DialogHeader>
 
-                    <form className="mt-4 flex w-full justify-center items-center">
-                        <div className="flex flex-col gap-3 w-[80%]">
-                            <Input onChange={(e) => setAddMemberEmail(e.target.value)} placeholder="Enter member email" /> 
+                    <form onSubmit={handleAddMember} className="mt-4 flex w-full justify-center items-center">
+                        <div className="flex flex-col w-[80%] relative">
+                            <Input onChange={(e) => setAddMemberEmail(e.target.value)} value={addMemberEmail} placeholder="Enter member email" className={`${addMemberEmail.length > 0 && !addMemberEmail.includes('@') && 'border-b-0 rounded-b-none'}`} /> 
+
+                            <div className="relative w-full mb-3">
+
+                                { 
+                                    addMemberEmail.length > 0 &&
+                                    !addMemberEmail.includes('@') &&
+                                    <div className="absolute flex flex-col w-full border-white border-[1px] border-t-0">
+                                        {
+                                            // @ts-ignore
+                                            !isLoadingUsers && filteredUsers?.map((user: any) => {
+                                                return (
+                                                    <div onClick={() => setAddMemberEmail(user.email)} key={user?.id} className="bg-background-900 hover:bg-background-950 flex w-full cursor-pointer px-6 py-2">
+                                                        <h1 className="grow">{user?.email}</h1>
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                    </div>
+                                }
+
+                            </div>
+
                             <Button type="submit" className="bg-primary-700 text-text-50 hover:bg-primary-800 font-semibold w-full">Confirm</Button>
                         </div>
                     </form>

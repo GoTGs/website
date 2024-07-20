@@ -21,4 +21,7 @@ export const classroomAPI = {
     getMembers: async (id: string | unknown) => {
         return (await axios.get<User[]>(`/classroom/${id}/member/get/all`, axiosConfigClassrooms)).data;
     },
+    addUserToClassroom: async (classroomId: string | null, email: string ) => {
+        return (await axios.post(`/classroom/${classroomId}/add`, {email}, axiosConfigClassrooms)).data;
+    },
 };
