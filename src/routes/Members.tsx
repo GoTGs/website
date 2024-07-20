@@ -75,6 +75,20 @@ export default function Members() {
     })
 
     const filteredUsers = !isLoadingUsers && allUsers?.filter((user) => user.email.toLowerCase().includes(addMemberEmail.toLowerCase()))
+    
+    const removeMemberFromClassroomMutation = useMutation({
+        mutationFn: (userId: string) => classroomAPI.removeMemberFromClassroom(searchParams.get('roomId'), userId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['members', searchParams.get('roomId')] })
+        },
+        onError: (error) => {
+            toast({
+                variant: "destructive",
+                // @ts-ignore
+                title: error.response.data.data,
+            })
+        }
+    })
  
     useEffect(() => {
         if (!searchParams.has('roomId')) {
@@ -143,7 +157,7 @@ export default function Members() {
                             // @ts-ignore
                             filteredMembers?.map(member => (
                                 member?.role !== 'admin') && 
-                                <MemberEntry key={member?.id} firstName={member?.first_name} lastName={member.last_name} email={member.email} role={member.role} id={member.id} isAdmin={user?.role === 'admin'}/>
+                                <MemberEntry key={member?.id} firstName={member?.first_name} lastName={member.last_name} email={member.email} role={member.role} onRemove={() => {removeMemberFromClassroomMutation.mutate(member?.id)}} isAdmin={user?.role === 'admin'}/>
                             )
                         }
                     </div>

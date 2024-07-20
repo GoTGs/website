@@ -21,7 +21,10 @@ export const classroomAPI = {
     getMembers: async (id: string | unknown) => {
         return (await axios.get<User[]>(`/classroom/${id}/member/get/all`, axiosConfigClassrooms)).data;
     },
-    addUserToClassroom: async (classroomId: string | null, email: string ) => {
+    addUserToClassroom: async (classroomId: string | null, email?: string ) => {
         return (await axios.post(`/classroom/${classroomId}/add`, {email}, axiosConfigClassrooms)).data;
+    },
+    removeMemberFromClassroom: async (classroomId: string | null, id?: string) => {
+        return (await axios.delete(`/classroom/${classroomId}/member/${id}/remove`, axiosConfigClassrooms)).data;
     },
 };

@@ -1,6 +1,6 @@
 import { Button } from "./ui/button"
 
-export default function MemberEntry({firstName, lastName, email, role, id, isAdmin}: {firstName: string, lastName: string, email: string, role: string, id: number, isAdmin: boolean}) {
+export default function MemberEntry({firstName, lastName, email, role, isAdmin, onRemove}: {firstName: string, lastName: string, email: string, role: string, isAdmin: boolean, onRemove: () => void}) {
     return (
         <>
             <div className="gap-10 flex p-3 text-text-50 border-text-300 border-x border-b items-center duration-100 transition-colors">
@@ -12,7 +12,7 @@ export default function MemberEntry({firstName, lastName, email, role, id, isAdm
                 <h1 className="w-[1%] grow break-words">{role.toUpperCase()}</h1>
 
                 {isAdmin && <div className="w-[1%] grow">
-                    <Button className="bg-[#e74c4c] transition-colors font-bold text-text-50 hover:bg-[#b43c3c] duration-150">Remove</Button>
+                    <Button onClick={onRemove} className="bg-[#e74c4c] transition-colors font-bold text-text-50 hover:bg-[#b43c3c] duration-150">Remove</Button>
                 </div>}
             </div>
         </>
