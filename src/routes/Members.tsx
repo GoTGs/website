@@ -36,20 +36,24 @@ export default function Members() {
     const [addMemberDialogOpen, setAddMemberDialogOpen] = useState<boolean>(false)
     const [addMemberEmail, setAddMemberEmail] = useState<string>('')
 
+    const [serachUserEmail, setSearchUserEmail] = useState<string>('')
+    
     const {data: classsroom, isLoading: isLoadingClassroom} = useQuery({
         queryKey: ['classroom', searchParams.get('assignmentId')],
         queryFn: () => classroomAPI.getClassroom(searchParams.get('roomId')),
     })
-
+    
     const {data: user, isLoading: isLoadingUser } = useQuery({
         queryKey: ['user'],
         queryFn: userAPI.getUser,
     })
-
+    
     const {data: members, isLoading: isLoadingMembers} = useQuery({
         queryKey: ['members', searchParams.get('roomId')],
         queryFn: () => classroomAPI.getMembers(searchParams.get('roomId')),
     })
+
+    const filteredMembers = !isLoadingMembers && members?.filter((member) => member.email.toLowerCase().includes(serachUserEmail.toLowerCase()))
 
     const {data: allUsers, isLoading: isLoadingUsers} = useQuery({
         queryKey: ['allUsers'],
@@ -115,7 +119,7 @@ export default function Members() {
                     </Breadcrumb>
 
                     <div className="relative flex w-full text-text-50">
-                        <Input placeholder="Search for a member. Enter email" className="w-1/4"/>
+                        <Input onChange={(e) => setSearchUserEmail(e.target.value)} placeholder="Search for a member. Enter email" className="w-1/4"/>
 
                         {
                             !isLoadingUser && 
@@ -136,7 +140,8 @@ export default function Members() {
 
                         {
                             !isLoadingMembers &&
-                            members?.map(member => (
+                            // @ts-ignore
+                            filteredMembers?.map(member => (
                                 member?.role !== 'admin') && 
                                 <MemberEntry key={member?.id} firstName={member?.first_name} lastName={member.last_name} email={member.email} role={member.role} id={member.id} isAdmin={user?.role === 'admin'}/>
                             )
