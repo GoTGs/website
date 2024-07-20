@@ -18,7 +18,7 @@ export default function ProfileAvatar({ name, role, className, isLoading }: { na
                     <Skeleton className="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full bg-[#88888850]"/>
                 </div>
 
-                :<div onClick={() => {navigate('/profile')}} className={`text-text-50 flex gap-5 justify-center items-center cursor-pointer hover:scale-105 active:scale-100 ${className}`}>
+                :<div onClick={() => {navigate('/profile')}} className={`text-text-50 flex gap-5 justify-center items-center cursor-pointer hover:bg-background-800 px-4 py-2 rounded-md transition-all hover:scale-105 active:scale-100 ${className}`}>
                     <div className="flex justify-center items-center flex-col">
                         <h1 className="font-bold text-lg">{name}</h1>
                         <Badge className="bg-accent-400 hover:bg-accent-400">{role?.toUpperCase()}</Badge>

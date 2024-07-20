@@ -10,8 +10,8 @@ export default function Nav({ className, role }: { className?: string, role?: st
     const navigate = useNavigate()
 
     return (
-        <>
-            <div className={`w-[16vw] min-h-full bg-background-950 border-text-200 border-r-[1px] relative text-text-50 max-lg:absolute max-lg:w-full max-lg:z-20 ${className}`}>
+        <> 
+            <div className={`w-[17vw] min-h-full bg-background-950 border-text-200 border-r-[1px] relative text-text-50 max-lg:absolute max-lg:w-full max-lg:z-20 ${className}`}>
                 <h1 className="font-bold text-lg mt-16 ml-5">Menu</h1> 
                 <div className="flex flex-col items-center mt-5 gap-1">
                     <NavElement title="Dashboard" icon={<Home/>} active={location.pathname === '/dashboard'} onClick={() => {navigate('/dashboard')}}/>
