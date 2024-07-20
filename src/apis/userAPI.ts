@@ -10,7 +10,7 @@ export type User = {
 }
 
 export const userAPI = {
-    getUser: async () => {
+    getUser: async() => {
         return (await axios.get<User>('/user/get', axiosConfigUser)).data;
     },
     updateUser: async (data: any) => {
