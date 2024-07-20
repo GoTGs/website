@@ -3,9 +3,9 @@ import { useLocation, useNavigate } from "react-router-dom"
 import NavElement from "./NavElement"
 import PinnedClassElement from "./PinnedClassElement"
 
-import { Home, CircleUser } from "lucide-react"
+import { Home, CircleUser, Users } from "lucide-react"
 
-export default function Nav({ className }: { className?: string}) {
+export default function Nav({ className, role }: { className?: string, role?: string}) {
     const location = useLocation()
     const navigate = useNavigate()
 
@@ -16,6 +16,10 @@ export default function Nav({ className }: { className?: string}) {
                 <div className="flex flex-col items-center mt-5 gap-1">
                     <NavElement title="Dashboard" icon={<Home/>} active={location.pathname === '/dashboard'} onClick={() => {navigate('/dashboard')}}/>
                     <NavElement title="Profile" icon={<CircleUser/>} active={location.pathname === '/profile'} onClick={() => {navigate('/profile')}}/>
+                    {
+                        role === 'admin' &&
+                        <NavElement title="Users" icon={<Users/>} active={location.pathname === '/users'} onClick={() => {navigate('/users')}}/>
+                    }
                 </div>
                 <h1 className="font-bold text-lg mt-10 ml-5">Pinned</h1> 
                 <div className="flex flex-col items-center mt-5 gap-1">

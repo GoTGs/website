@@ -76,7 +76,7 @@ export default function Dashboard() {
 
                 <Menu onClick={() => {setMenuOpen(true)}} className="lg:hidden absolute w-12 h-12 top-3 text-text-50 hover:scale-105 active:scale-100 cursor-pointer left-4"/>
                 {menuOpen && <Plus onClick={() => {setMenuOpen(false)}} className="lg:hidden rotate-45 absolute w-12 h-12 top-5 text-text-50 hover:scale-105 active:scale-100 cursor-pointer right-5 z-30"/>}
-                <Nav className={`${!menuOpen? "max-lg:hidden": ""}`}/>
+                <Nav role={user?.role} className={`${!menuOpen? "max-lg:hidden": ""}`}/>
                 
                 <div className="w-5/6 flex flex-col items-center gap-8 overflow-x-hidden">
 

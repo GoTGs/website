@@ -16,6 +16,7 @@ import Assignments from "./routes/Assignments"
 import Assignment from "./routes/Assignment"
 import Profile from "./routes/Profile"
 import Members from "./routes/Members"
+import Users from "./routes/Users"
 
 const queryClient = new QueryClient()
 
@@ -30,6 +31,7 @@ function App() {
     { path: '/assignment', element: <Protected> <Assignment /> </Protected>},
     { path: '/profile', element: <Protected> <Profile /> </Protected>},
     { path: '/members', element: <Protected> <Members /> </Protected>},
+    { path: '/users', element: <Protected> <Users /> </Protected>},
   ])
 
   return (

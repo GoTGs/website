@@ -19,4 +19,7 @@ export const userAPI = {
     getUsers: async () => {
         return (await axios.get<User[]>('/user/get/all', axiosConfigUser)).data;
     },
+    updateUserAdmin: async ({data, userId} : {data: any, userId?: string}) => {
+        return (await axios.put(`/user/update/${userId}`, data, axiosConfigUser)).data
+    }
 };
