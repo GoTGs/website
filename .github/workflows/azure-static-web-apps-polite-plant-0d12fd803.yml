@@ -33,6 +33,12 @@ jobs:
           output_location: "dist" # Built app content directory - optional
           ###### End of Repository/Build Configurations ######
 
+        env:
+          VITE_BACKEND_URL_AUTHENTICATION: https://gotgs-auth.azurewebsites.net
+          VITE_BACKEND_URL_USER: https://gotgs-user-hbc6ebgkfxd6amev.polandcentral-01.azurewebsites.net
+          VITE_BACKEND_URL_CLASSROOM: https://gots-classroom-fxgkgsd2hkb4ffcz.polandcentral-01.azurewebsites.net
+          VITE_BACKEND_URL_ASSIGNMENT: https://gotgs-assignment-aabxaec4epfbhtc6.polandcentral-01.azurewebsites.net
+
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-latest
