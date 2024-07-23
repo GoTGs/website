@@ -9,7 +9,7 @@ import FileEntry from "@/components/FileEntry"
 
 import { classroomAPI } from "@/apis/classroomAPI"
 import { userAPI } from "@/apis/userAPI"
-import { assignmentAPI, AssignmentDataType } from "@/apis/assignmentAPI"
+import { assignmentAPI, AssignmentCreateDataType } from "@/apis/assignmentAPI"
 import { useDropzone } from 'react-dropzone'
 
 import { CalendarIcon } from "lucide-react"
@@ -115,13 +115,12 @@ export default function Assignments() {
             return
         }
 
-        const newAssignmentData: AssignmentDataType = {
+        const newAssignmentData: AssignmentCreateDataType = {
             title: newAssignment.title,
             description: newAssignment.description,
             dueDate: moment(newAssignmentDate).format('DD-MM-YYYY')
         }
 
-        // await assignmentAPI.createAssignment(searchParams.get('id'), newAssignmentData)
         createAssignmentMutataion.mutate({classroomId: searchParams.get('id'), data: newAssignmentData})
 
         setNewAssignment({title: '', description: ''})

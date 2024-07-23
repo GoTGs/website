@@ -1,10 +1,16 @@
 import { Trash2, File } from "lucide-react"
 import { Button } from "./ui/button"
 
-export default function FileEntry({ fileName, ondelete } : {fileName: string, ondelete?: () => void}) {
+export default function FileEntry({ fileName, ondelete, fileLink } : {fileName: string | undefined, ondelete?: () => void, fileLink?: string}) {
+    const handleFileDownload = () => {
+        if (fileLink) {
+            window.open(fileLink, '_blank')
+        }
+    }
+
     return (
         <>
-            <div className="bg-background-700 flex text-text-50 font-semibold p-2 gap-5 rounded-md relative">
+            <div onClick={handleFileDownload} className={`bg-background-700 flex text-text-50 font-semibold p-2 gap-5 rounded-md relative ${fileLink? 'hover:bg-background-800 cursor-pointer': ''}`}>
                 <File className="left-0"/>
 
                 <p className="grow">{ fileName }</p>

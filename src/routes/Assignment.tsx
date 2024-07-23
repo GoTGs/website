@@ -26,7 +26,6 @@ export default function Assignment() {
     const [searchParams] = useSearchParams()
 
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
-    const [assignmentFiles, setAssignmentFiles] = useState<File[]>([])
 
     const {data: classsroom, isLoading: isLoadingClassroom} = useQuery({
         queryKey: ['classroom', searchParams.get('assignmentId')],
@@ -90,8 +89,14 @@ export default function Assignment() {
 
                             <div className="flex flex-col gap-1">
                                 {
-                                    assignmentFiles.map((item) => {
-                                        return <FileEntry fileName={item.name} />
+                                    assignment?.files.map((item: string, index: number) => {
+                                        let baseName = item.split('/').at(-1)
+
+                                        if(item.includes('-')) {
+                                            return <FileEntry key={index} fileName={baseName?.split('-').slice(1).join('-').replaceAll('%20', ' ')} fileLink={item}/>
+                                        }
+
+                                        return <FileEntry key={index} fileName={baseName?.replaceAll("%20", " ")} fileLink={item}/>
                                     })
                                 }
                             </div>
@@ -126,7 +131,35 @@ export default function Assignment() {
                                 </div>
                             }
 
-                            <Button className="bg-primary-800 hover:bg-primary-700 text-text-50 font-bold text-xl">Submit</Button>
+                            {
+                                // @ts-ignore
+                                assignment?.submissions?.map(submission => {
+                                    return (
+                                        <div key={submission.id} className="flex flex-col gap-3">
+                                            <p className="text-text-50 max-w-[90ch]">{submission.text}</p>
+                                            <div className="flex flex-col gap-1">
+                                                {
+                                                    submission?.file_links.map((item: string, index: number) => {
+                                                        let baseName = item.split('/').at(-1)
+
+                                                        if(item.includes('-')) {
+                                                            return <FileEntry key={index} fileName={baseName?.split('-').slice(1).join('-').replaceAll('%20', ' ')} fileLink={item}/>
+                                                        }
+
+                                                        return <FileEntry key={index} fileName={baseName?.replaceAll("%20", " ")} fileLink={item}/>
+                                                    })
+                                                }
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
+
+                            {
+                                // @ts-ignore
+                                assignment?.submissions?.length == 0 &&
+                                <Button className="bg-primary-800 hover:bg-primary-700 text-text-50 font-bold text-xl">Submit</Button>
+                            }
                         </form>
                     </div>
                 </div>
