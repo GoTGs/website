@@ -5,10 +5,13 @@ import { useDropzone } from 'react-dropzone'
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { classroomAPI } from "@/apis/classroomAPI"
-import { assignmentAPI } from "@/apis/assignmentAPI"
+import { assignmentAPI, AssignmentEditDataType } from "@/apis/assignmentAPI"
 import { userAPI } from "@/apis/userAPI"
+import moment from "moment"
 
 import FileEntry from "@/components/FileEntry"
+
+import { CalendarIcon } from "lucide-react"
 
 import {
     Breadcrumb,
@@ -22,12 +25,15 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useToast } from "@/components/ui/use-toast"
+import { Calendar } from "@/components/ui/calendar"
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
+import { Input } from "@/components/ui/input"
 
 export default function Assignment() {
     const navigate = useNavigate()
@@ -38,6 +44,11 @@ export default function Assignment() {
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
     const [text, setText] = useState<string>('')
     const [isConfirmDeleteAssignmentDialogOpen, setIsConfirmDeleteAssignmentDialogOpen] = useState<boolean>(false)
+
+    const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false)
+
+    const [newAssignmentDate, setNewAssignmentDate] = useState<Date | undefined>(undefined)
+    const [editedAssignment, setEditedAssignment] = useState<AssignmentEditDataType | null>(null)
 
     const {data: classsroom, isLoading: isLoadingClassroom} = useQuery({
         queryKey: ['classroom', searchParams.get('assignmentId')],
@@ -63,6 +74,17 @@ export default function Assignment() {
     }, [])
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({onDrop})
+
+    const onDropEdit  = useCallback((file: any) => {
+        for (let i = 0; i < file.length; i++) {
+            const element = file[i]; 
+
+            // @ts-ignore
+            setEditedAssignment(prev => { return {...prev, files: [...prev.files, element] } })
+        }
+    }, [])
+
+    const { getRootProps: getRootPropsEdit, getInputProps: getInputPropsEdit, isDragActive: isDragActiveEdit } = useDropzone({onDrop: onDropEdit})
 
     const addSubmissionMutation = useMutation({
         mutationFn: assignmentAPI.addSubmission,
@@ -100,6 +122,18 @@ export default function Assignment() {
         }
     }, [])
 
+    useEffect(() => {
+        setEditedAssignment({
+            title: assignment?.title,
+            description: assignment?.description,
+            dueDate: assignment?.dueDate,
+            files: [],
+            stringFiles: assignment?.files
+        })
+
+        setNewAssignmentDate(moment(assignment?.dueDate, 'DD-MM-YYYY').toDate())
+    }, [assignment])
+
     const handleAddSubmission = (e: any) => {
         e.preventDefault()
 
@@ -117,6 +151,30 @@ export default function Assignment() {
 
     const deleteAssignment = () => {
         deleteAssignmentMutation.mutate(searchParams.get('assignmentId'))
+    }
+
+    const handleEditAssignment = (e: any) => {
+        e.preventDefault()
+
+        if (editedAssignment?.files?.length == 0 && editedAssignment?.stringFiles?.length == 0 && editedAssignment.title?.length == 0) {
+            toast({
+                title: 'Please upload a file or enter a title',
+                variant: 'destructive',
+            })
+            return
+        }
+ 
+        if (!newAssignmentDate) {
+            toast({
+                title: 'Please pick a due date',
+                variant: 'destructive',
+            })
+            return
+        }
+        
+        setEditedAssignment(prev => ({...prev, dueDate: moment(newAssignmentDate).format('DD-MM-YYYY')}))
+
+        setIsEditDialogOpen(false)
     }
 
     return (
@@ -145,8 +203,15 @@ export default function Assignment() {
                         </BreadcrumbList>
                     </Breadcrumb>
 
-                    <div className="right-0 flex items-center absolute top-16">
-                        {!isLoadingUser && user?.role === 'admin' && <Button onClick={() => {setIsConfirmDeleteAssignmentDialogOpen(true)}} className="bg-[#e74c4c] transition-colors font-bold text-text-50 hover:bg-[#b43c3c] duration-150">Delete</Button>}
+                    <div className="right-0 flex items-center absolute top-16 gap-3">
+                        {
+                            user?.role === 'admin' || user?.role === 'teacher'?
+                            <Button onClick={() => {setIsEditDialogOpen(true)}} className="text-text-50 px-6 py-4 bg-primary-700 hover:bg-primary-800">Edit</Button>: null
+                        }
+                        {
+                            !isLoadingUser && user?.role === 'admin' || user?.role === 'teacher'? 
+                            <Button onClick={() => {setIsConfirmDeleteAssignmentDialogOpen(true)}} className="bg-[#e74c4c] transition-colors font-bold text-text-50 hover:bg-[#b43c3c] duration-150">Delete</Button>: null
+                        }
 
                         <Dialog open={isConfirmDeleteAssignmentDialogOpen} onOpenChange={setIsConfirmDeleteAssignmentDialogOpen}>
                             <DialogContent className="bg-background-950 text-text-50">
@@ -175,13 +240,15 @@ export default function Assignment() {
                             <div className="flex flex-col gap-1">
                                 {
                                     assignment?.files.map((item: string, index: number) => {
-                                        let baseName = item.split('/').at(-1)
+                                        let fileName = item.split('/').at(-1)
 
                                         if(item.includes('-')) {
-                                            return <FileEntry key={index} fileName={baseName?.split('-').slice(1).join('-').replaceAll('%20', ' ')} fileLink={item}/>
+                                            fileName = fileName?.split('-').slice(1).join('-').replaceAll('%20', ' ')
+                                        } else {
+                                            fileName = fileName?.replaceAll("%20", " ")
                                         }
 
-                                        return <FileEntry key={index} fileName={baseName?.replaceAll("%20", " ")} fileLink={item}/>
+                                        return <FileEntry key={index} fileName={fileName} fileLink={item}/>
                                     })
                                 }
                             </div>
@@ -225,13 +292,15 @@ export default function Assignment() {
                                             <div className="flex flex-col gap-1">
                                                 {
                                                     submission?.file_links.map((item: string, index: number) => {
-                                                        let baseName = item.split('/').at(-1)
+                                                        let fileName = item.split('/').at(-1)
 
                                                         if(item.includes('-')) {
-                                                            return <FileEntry key={index} fileName={baseName?.split('-').slice(1).join('-').replaceAll('%20', ' ')} fileLink={item}/>
+                                                            fileName = fileName?.split('-').slice(1).join('-').replaceAll('%20', ' ')
+                                                        } else {
+                                                            fileName = fileName?.replaceAll("%20", " ")
                                                         }
 
-                                                        return <FileEntry key={index} fileName={baseName?.replaceAll("%20", " ")} fileLink={item}/>
+                                                        return <FileEntry key={index} fileName={fileName} fileLink={item}/>
                                                     })
                                                 }
                                             </div>
@@ -243,12 +312,96 @@ export default function Assignment() {
                             {
                                 // @ts-ignore
                                 assignment?.submissions?.length == 0 &&
+                                moment(assignment?.dueDate, 'DD-MM-YYYY').isAfter(moment()) &&
                                 <Button className="bg-primary-700 hover:bg-primary-800 text-text-50 font-bold text-xl">Submit</Button>
                             }
                         </form>
                     </div>
                 </div>
             </div>
+
+            <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen} >                        
+                <DialogContent className="bg-background-950 text-text-50 min-w-[60%] min-h-[60%]">
+                    <DialogHeader>
+                        <DialogTitle className="text-2xl">Edit Assignment: <span className="font-bold">{assignment?.title}</span></DialogTitle>
+                    </DialogHeader>
+
+                    <form onSubmit={handleEditAssignment} className="mt-4 flex w-full justify-center">
+                        <div className="w-[90%] flex flex-col gap-5">
+                            <div className="w-full flex flex-col gap-3">
+                                <Input onChange={(e) => {setEditedAssignment(prev => ({...prev, title: e.target.value}))}} value={editedAssignment?.title} placeholder="Enter assignment title" name="title" className="text-text-50" />
+
+                                <div>
+                                    <Textarea onChange={(e) => {setEditedAssignment(prev => ({...prev, description: e.target.value}))}} name="description" value={editedAssignment?.description} placeholder="Enter assignment discription" className="resize-none text-text-50 text-md border-b-none rounded-b-none" rows={12}/>
+
+                                    <div className={`bg-background-800 border-white border-l border-r border-b rounded-b-md relative text-text-50 p-4 ${isDragActiveEdit? 'bg-background-700' : ''}`} {...getRootPropsEdit()}>
+                                        <input {...getInputPropsEdit()} />
+                                        {
+                                            isDragActiveEdit ?
+                                            <div className="flex justify-center items-center">
+                                                <p className="text-text-200 font-bold">Drop the files here ...</p>
+                                            </div> :
+                                            <p>Drag 'n' drop some files here, or click to select files</p>
+                                        }
+                                    </div>
+                                </div>
+
+                                {
+                                    editedAssignment?.stringFiles &&
+                                    <div className="flex flex-col gap-1">
+                                        {
+                                            editedAssignment?.stringFiles.map((item, index) => {
+                                                let fileName: string | undefined = item.split('/').at(-1)
+
+                                                if(item.includes('-')) {
+                                                    fileName = fileName?.split('-').slice(1).join('-').replaceAll('%20', ' ')
+                                                } else {
+                                                    fileName = fileName?.replaceAll("%20", " ")
+                                                }
+
+                                                return <FileEntry key={index} fileName={fileName} ondelete={(e: any) => {e.preventDefault(); setEditedAssignment(prev => ({...prev, stringFiles: prev?.stringFiles?.filter((_, i) => i !== index) })) }}/>
+                                            })
+                                        }
+                                    </div>
+                                }
+                                {
+                                    editedAssignment?.files &&
+                                    <div className="flex flex-col gap-1">
+                                        {
+                                            editedAssignment?.files.map((item, index) => {
+                                                return <FileEntry key={index} fileName={item.name} ondelete={(e: any) => {e.preventDefault(); setEditedAssignment(prev => ({...prev, files: prev?.files?.filter((_, i) => i !== index) })) }}/>
+                                            })
+                                        }
+                                    </div>
+                                }
+
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button variant="outline" className="relative flex justify-center w-1/3">
+                                                {
+                                                newAssignmentDate? 
+                                                <span className="absolute left-2 text-text-50 font-semibold">{newAssignmentDate.toDateString()}</span>:
+                                                <span className="absolute left-2 text-text-500 font-semibold">Pick a due date</span>
+                                            }
+
+                                            <CalendarIcon className="absolute right-2 m-auto text-text-500"/>
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0" align="start">
+                                        <Calendar
+                                            mode="single"
+                                            selected={newAssignmentDate}
+                                            onSelect={setNewAssignmentDate}
+                                            className="rounded-md bg-background-950 text-text-50"
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+                            </div>
+                            <Button type="submit" className="bg-primary-700 text-text-50 hover:bg-primary-800 font-semibold w-full">Edit Assignment</Button>
+                        </div>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </>
     )
 }

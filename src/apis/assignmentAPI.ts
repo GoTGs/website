@@ -29,6 +29,14 @@ export type SubmitAssignmentDataType = {
     files: File[]
 }
 
+export type AssignmentEditDataType = {
+    title?: string,
+    description?: string,
+    dueDate?: string,
+    files?: File[]
+    stringFiles?: string[]
+}
+
 export const assignmentAPI = {
     getAssignments: async (classroomId: string | null) => {
         return (await axios.get<AssignmentDataType[]>(`/assignment/classroom/${classroomId}/get/all`, axiosConfigAssignment)).data;

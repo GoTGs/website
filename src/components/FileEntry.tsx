@@ -1,7 +1,7 @@
 import { Trash2, File } from "lucide-react"
 import { Button } from "./ui/button"
 
-export default function FileEntry({ fileName, ondelete, fileLink } : {fileName: string | undefined, ondelete?: () => void, fileLink?: string}) {
+export default function FileEntry({ fileName, ondelete, fileLink } : {fileName: string | undefined, ondelete?: (e?: any) => void, fileLink?: string}) {
     const handleFileDownload = () => {
         if (fileLink) {
             window.open(fileLink, '_blank')
