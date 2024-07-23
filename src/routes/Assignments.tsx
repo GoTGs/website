@@ -118,7 +118,8 @@ export default function Assignments() {
         const newAssignmentData: AssignmentCreateDataType = {
             title: newAssignment.title,
             description: newAssignment.description,
-            dueDate: moment(newAssignmentDate).format('DD-MM-YYYY')
+            dueDate: moment(newAssignmentDate).format('DD-MM-YYYY'),
+            files: uploadedFiles
         }
 
         createAssignmentMutataion.mutate({classroomId: searchParams.get('id'), data: newAssignmentData})

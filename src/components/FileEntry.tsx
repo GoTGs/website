@@ -10,7 +10,7 @@ export default function FileEntry({ fileName, ondelete, fileLink } : {fileName: 
 
     return (
         <>
-            <div onClick={handleFileDownload} className={`bg-background-700 flex text-text-50 font-semibold p-2 gap-5 rounded-md relative ${fileLink? 'hover:bg-background-800 cursor-pointer': ''}`}>
+            <div onClick={handleFileDownload} className={`bg-background-700 flex text-text-50 font-semibold p-2 gap-5 items-center rounded-md relative ${fileLink? 'hover:bg-background-800 cursor-pointer': ''}`}>
                 <File className="left-0"/>
 
                 <p className="grow">{ fileName }</p>

@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react"
 
 import { useSearchParams, useNavigate } from "react-router-dom"
 import { useDropzone } from 'react-dropzone'
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { classroomAPI } from "@/apis/classroomAPI"
 import { assignmentAPI } from "@/apis/assignmentAPI"
@@ -20,12 +20,16 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useToast } from "@/components/ui/use-toast"
 
 export default function Assignment() {
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
+    const { toast } = useToast()
+    const queryClient = useQueryClient()
 
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
+    const [text, setText] = useState<string>('')
 
     const {data: classsroom, isLoading: isLoadingClassroom} = useQuery({
         queryKey: ['classroom', searchParams.get('assignmentId')],
@@ -47,11 +51,40 @@ export default function Assignment() {
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({onDrop})
 
+    const addSubmissionMutation = useMutation({
+        mutationFn: assignmentAPI.addSubmission,
+        onError: (error) => {
+            toast({
+                // @ts-ignore
+                title: error.response.data.data,
+                variant: 'destructive',
+            })
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ['assignment', searchParams.get('assignmentId')]})
+        }
+    })
+
     useEffect(() => {
         if (!searchParams.has('assignmentId')) {
             navigate('/dashboard')
         }
     }, [])
+
+    const handleAddSubmission = (e: any) => {
+        e.preventDefault()
+
+        if (uploadedFiles.length == 0 && text == '') {
+            toast({
+                title: 'Please enter a text or upload a file',
+                variant: 'destructive',
+            })
+            return
+        }
+
+        addSubmissionMutation.mutate({assignmentId: searchParams.get('assignmentId'), data: {text, files: uploadedFiles}})
+        setUploadedFiles([])
+    }
 
     return (
         <>        
@@ -102,10 +135,10 @@ export default function Assignment() {
                             </div>
                         </div>
 
-                        <form onSubmit={(e) => {e.preventDefault()}} className="flex flex-col w-full gap-2 mb-5">
+                        <form onSubmit={handleAddSubmission} className="flex flex-col w-full gap-2 mb-5">
                             <div className="flex flex-col w-full">
                                 <div className="flex flex-col w-full">
-                                    <Textarea placeholder="Enter your text" className="resize-none text-text-50 text-lg bg-background-900 rounded-b-none" rows={5}/>
+                                    <Textarea onChange={(e) => setText(e.target.value)} placeholder="Enter your text" className="resize-none text-text-50 text-lg bg-background-900 rounded-b-none" rows={5}/>
                                 </div>
 
                                 <div className={`bg-background-800 border-white border-l border-r border-b rounded-b-md relative text-text-50 p-4 ${isDragActive? 'bg-background-700' : ''}`} {...getRootProps()}>

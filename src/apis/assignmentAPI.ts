@@ -19,8 +19,14 @@ export type AssignmentDataType = {
 
 export type AssignmentCreateDataType = {
     title: string,
-    description: string,
+    description?: string,
     dueDate: string,
+    files: File[]
+}
+
+export type SubmitAssignmentDataType = {
+    text: string,
+    files: File[]
 }
 
 export const assignmentAPI = {
@@ -31,6 +37,44 @@ export const assignmentAPI = {
         return (await axios.get<AssignmentDataType>(`/assignment/${assignmentId}/get`, axiosConfigAssignment)).data;
     },
     createAssignment: async ({classroomId, data }: {classroomId: string | null, data: AssignmentCreateDataType}) => {
-        return (await axios.post(`/assignment/classroom/${classroomId}/create`, data, axiosConfigAssignment)).data;
+        const formData = new FormData();
+
+        formData.append('title', data.title);
+        formData.append('description', data.description || '');
+        formData.append('dueDate', data.dueDate);
+
+        for (let i = 0; i < data.files.length; i++) {
+            formData.append('files ' + i, data.files[i]);
+        }
+
+        return (await axios.post(`/assignment/classroom/${classroomId}/create`, 
+            formData,
+            {
+                ...axiosConfigAssignment,
+                headers: {
+                    ...axiosConfigAssignment.headers,
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
+        )).data;
+    },
+    addSubmission: async ({assignmentId, data}: {assignmentId: string | null, data: SubmitAssignmentDataType}) => {
+        const formData = new FormData();
+        formData.append('text', data.text);
+
+        for (let i = 0; i < data.files.length; i++) {
+            formData.append('files ' + i, data.files[i]);
+        }
+
+        return (await axios.post(`/assignment/${assignmentId}/submit`, 
+            formData,
+            {
+                ...axiosConfigAssignment,
+                headers: {
+                    ...axiosConfigAssignment.headers,
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
+        )).data;
     }
 };

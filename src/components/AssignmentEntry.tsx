@@ -1,7 +1,7 @@
 import { CircleCheck, Circle, Calendar, GraduationCap } from "lucide-react"
 import { useSearchParams, useNavigate } from "react-router-dom"
 
-export default function AssignmentEntry({title, dueDate, status, score, id} : {title: string, dueDate: string, status: string, score: string, id: number}) {
+export default function AssignmentEntry({title, dueDate, status, score, id} : {title: string, dueDate: string, status: boolean, score: string, id: number}) {
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
 
@@ -17,9 +17,11 @@ export default function AssignmentEntry({title, dueDate, status, score, id} : {t
 
                 <div className="w-[1%] grow flex gap-2">
                     {
-                        status == "Completed"? <CircleCheck /> : <Circle />
+                        status? <CircleCheck /> : <Circle />
                     }
-                    <h1>{status}</h1>
+                    {
+                        status? <h1>Done</h1> : <h1>Todo</h1>
+                    }
                 </div>
 
                 <div className="w-[1%] grow flex gap-2">
