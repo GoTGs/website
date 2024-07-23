@@ -5,6 +5,7 @@ import { useDropzone } from 'react-dropzone'
 import { useQuery } from "@tanstack/react-query"
 
 import { classroomAPI } from "@/apis/classroomAPI"
+import { assignmentAPI } from "@/apis/assignmentAPI"
 
 import FileEntry from "@/components/FileEntry"
 
@@ -30,6 +31,11 @@ export default function Assignment() {
     const {data: classsroom, isLoading: isLoadingClassroom} = useQuery({
         queryKey: ['classroom', searchParams.get('assignmentId')],
         queryFn: () => classroomAPI.getClassroom(searchParams.get('roomId')),
+    })
+
+    const {data: assignment, isLoading: isLoadingAssignment} = useQuery({
+        queryKey: ['assignment', searchParams.get('assignmentId')],
+        queryFn: () => assignmentAPI.getAssignment(searchParams.get('assignmentId')),
     })
 
     const onDrop  = useCallback((file: any) => {
@@ -66,14 +72,21 @@ export default function Assignment() {
                             </BreadcrumbItem>
                             <BreadcrumbSeparator><p className="text-2xl -translate-y-1 text-text-50">/</p></BreadcrumbSeparator>
                             <BreadcrumbItem>
-                                <BreadcrumbPage className="text-lg text-text-50 font-semibold px-2">Revolutionizing Industries: The Power of Artificial Intelligence</BreadcrumbPage> 
+                                {!isLoadingClassroom?
+                                    <BreadcrumbPage className="text-lg text-text-50 font-semibold px-2">{assignment?.title}</BreadcrumbPage>:
+                                    <Skeleton className="w-[100px] h-6 bg-[#88888850] rounded-lg" />
+                                }
                             </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
 
                     <div className="flex gap-10 max-lg:flex-col">
                         <div className="flex flex-col text-text-50 w-full leading-8 gap-5">
-                            <p className="text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo, voluptatum animi nobis, quae iste mollitia eveniet non quod consequatur corporis cum voluptatem. Iusto quia aperiam vitae, voluptate totam, assumenda expedita officiis tenetur enim optio sed, numquam cupiditate omnis praesentium corrupti fuga quas veritatis! Enim debitis asperiores fugit quisquam, reprehenderit aspernatur.</p>
+                            {
+                                !isLoadingAssignment?
+                                <p className="text-justify">{assignment?.description}</p>:
+                                <Skeleton className="w-full h-6 bg-[#88888850] rounded-lg" />
+                            }
 
                             <div className="flex flex-col gap-1">
                                 {

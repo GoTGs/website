@@ -16,3 +16,10 @@ export const axiosConfigClassrooms = {
         'Authorization': 'Bearer ' + localStorage.getItem('token')
     }
 }
+
+export const axiosConfigAssignment = {
+    baseURL: import.meta.env.VITE_BACKEND_URL_ASSIGNMENT,
+    headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+    }
+}

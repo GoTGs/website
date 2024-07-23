@@ -1,6 +1,8 @@
 import AssignmentEntry from "./AssignmentEntry"
+import { AssignmentDataType } from "@/apis/assignmentAPI"
+import moment from 'moment'
 
-export default function AssignmentsTable({ className } : {className?: string}) {
+export default function AssignmentsTable({ className, assignments } : {className?: string, assignments: AssignmentDataType[] | undefined}) {
     return (
         <>
             <div className={`text-text-50 flex flex-col ${className}`}>
@@ -11,9 +13,11 @@ export default function AssignmentsTable({ className } : {className?: string}) {
                     <h1 className="w-[1%] grow">Score</h1>
                 </div>
 
-                <AssignmentEntry title="Exploring the Intricacies of Quantum Computing: How Quantum Mechanics is Revolutionizing Technology and Problem-Solving" dueDate="15-07-2024" status="Todo" score="Not Graded" id={1} />
-                <AssignmentEntry title="Revolutionizing Industries: The Power of Artificial Intelligence" dueDate="20-07-2024" status="Completed" score="97%" id={2}/>
-                <AssignmentEntry title="The Future of Renewable Energy: How Innovative Technologies Are Paving the Way for a Sustainable and Eco-Friendly World" dueDate="18-07-2024" status="Completed" score="Not Graded" id={3}/>
+                {
+                    assignments?.map(assignment => (
+                        <AssignmentEntry key={assignment.id} title={assignment.title} dueDate={moment(assignment.dueDate, 'DD-MM-YYYY HH:mm:ss').format("DD-MM-YY")} status="Todo" score="Not Graded" id={assignment.id} />
+                    ))
+                }
             </div>
         </>
     )

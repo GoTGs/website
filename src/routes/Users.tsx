@@ -177,7 +177,7 @@ export default function Users() {
 
                             {isChangePasswordSelected && <div>
                                 <Label htmlFor="password" className="text-text-50 font-bold">Password</Label>
-                                <Input onChange={handleUserInformationOnChange} placeholder="Enter new password" name="password" id="password" className="text-text-50" />
+                                <Input onChange={handleUserInformationOnChange} type="password" placeholder="Enter new password" name="password" id="password" className="text-text-50" />
                             </div>}
                             
                             <Button onClick={(e) => {e.preventDefault(); setIsChangePasswordSelected(prev => !prev)}} className="bg-[#e74c4c] hover:bg-[#b43c3c] text-text-50 font-semibold w-full">Change Password</Button>
