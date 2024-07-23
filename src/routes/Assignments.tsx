@@ -46,6 +46,7 @@ export default function Assignments() {
     const [isNewAssignmentDialogOpen, setIsNewAssignmentDialogOpen] = useState<boolean>(false)
     const [filter, setFilter] = useState<string>('all')
     const [filterDate, setFilterDate] = useState<Date | undefined>(undefined)
+    const [filterText, setFilterText] = useState<string>('')
 
     const [newAssignment, setNewAssignment] = useState<{title: string, description: string}>( {title: '', description: '' })
     const [newAssignmentDate, setNewAssignmentDate] = useState<Date | undefined>(undefined)
@@ -165,6 +166,15 @@ export default function Assignments() {
         })
     }
 
+    if(filterText.length > 0) {
+        // @ts-ignore
+        filterAssingments = filterAssingments?.filter((assignment: any) => {
+            if (assignment.title.toLowerCase().includes(filterText.toLowerCase())) {
+                return assignment
+            }
+        })
+    }
+
     const handleNewAssignmentOnChange = (e: any) => {
         setNewAssignment({...newAssignment, [e.target.name]: e.target.value})
     }
@@ -232,46 +242,49 @@ export default function Assignments() {
                     </div>
 
                     <div className="relative flex w-full text-text-50 gap-3">
-                        <div className="flex gap-3 max-lg:flex-col items-center max-lg:mb-14">
-                            <div className="flex">
-                                    <Label htmlFor="all" className="cursor-pointer border-y border-l border-text-300 rounded-l-md">
-                                        <input onChange={handleFilterSelect} type="radio" value="all" id="all" className="hidden" name="filter" checked={filter === 'all'} />
-                                        <div className="label-checked:bg-background-800 hover:bg-background-700 p-3 rounded-l-md">All</div>
-                                    </Label>
+                        <div className="flex gap-3 max-lg:flex-col items-center max-lg:mb-14 flex-col max-md:w-1/2">
+                            <Input onChange={(e) => {setFilterText(e.target.value)}} placeholder="Enter assignment title" className="text-text-50"/>
+                            <div className="flex gap-3 max-sm:flex-col">
+                                <div className="flex">
+                                        <Label htmlFor="all" className="cursor-pointer border-y border-l border-text-300 rounded-l-md">
+                                            <input onChange={handleFilterSelect} type="radio" value="all" id="all" className="hidden" name="filter" checked={filter === 'all'} />
+                                            <div className="label-checked:bg-background-800 hover:bg-background-700 p-3 rounded-l-md">All</div>
+                                        </Label>
 
-                                    <Label htmlFor="completed" className="cursor-pointer border-y border-text-300">
-                                        <input onChange={handleFilterSelect} type="radio" value="done" id="completed" name="filter" className="hidden" checked={filter === 'done'} />
-                                        <div className="label-checked:bg-background-800 hover:bg-background-700 p-3">Done</div>
-                                    </Label>
+                                        <Label htmlFor="completed" className="cursor-pointer border-y border-text-300">
+                                            <input onChange={handleFilterSelect} type="radio" value="done" id="completed" name="filter" className="hidden" checked={filter === 'done'} />
+                                            <div className="label-checked:bg-background-800 hover:bg-background-700 p-3">Done</div>
+                                        </Label>
 
-                                    <Label htmlFor="todo" className="cursor-pointer border-y border-r border-text-300 rounded-r-md">
-                                        <input onChange={handleFilterSelect} type="radio" value="todo" id="todo" name="filter" className="hidden" checked={filter === 'todo'} />
-                                        <div className="label-checked:bg-background-800 p-3 rounded-r-md hover:bg-background-700">Todo</div>
-                                    </Label>
+                                        <Label htmlFor="todo" className="cursor-pointer border-y border-r border-text-300 rounded-r-md">
+                                            <input onChange={handleFilterSelect} type="radio" value="todo" id="todo" name="filter" className="hidden" checked={filter === 'todo'} />
+                                            <div className="label-checked:bg-background-800 p-3 rounded-r-md hover:bg-background-700">Todo</div>
+                                        </Label>
+                                </div>
+
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button variant="outline" className="relative flex justify-center w-[200px]">
+                                                {
+                                                filterDate? 
+                                                <span className="absolute left-2 text-text-50 font-semibold">{filterDate.toDateString()}</span>:
+                                                <span className="absolute left-2 text-text-500 font-semibold">Filter by date</span>
+                                            }
+
+                                            <CalendarIcon className="absolute right-2 m-auto text-text-500"/>
+                                        </Button>
+                                    </PopoverTrigger>
+
+                                    <PopoverContent className="w-auto p-0" align="start">
+                                        <Calendar
+                                            mode="single"
+                                            selected={filterDate}
+                                            onSelect={setFilterDate}
+                                            className="rounded-md bg-background-950 text-text-50"
+                                        />
+                                    </PopoverContent>
+                                </Popover>
                             </div>
-
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <Button variant="outline" className="relative flex justify-center w-[200px]">
-                                            {
-                                            filterDate? 
-                                            <span className="absolute left-2 text-text-50 font-semibold">{filterDate.toDateString()}</span>:
-                                            <span className="absolute left-2 text-text-500 font-semibold">Filter by date</span>
-                                        }
-
-                                        <CalendarIcon className="absolute right-2 m-auto text-text-500"/>
-                                    </Button>
-                                </PopoverTrigger>
-
-                                <PopoverContent className="w-auto p-0" align="start">
-                                    <Calendar
-                                        mode="single"
-                                        selected={filterDate}
-                                        onSelect={setFilterDate}
-                                        className="rounded-md bg-background-950 text-text-50"
-                                    />
-                                </PopoverContent>
-                            </Popover>
                         </div>
 
                         {
