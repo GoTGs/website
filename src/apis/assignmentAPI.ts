@@ -76,5 +76,8 @@ export const assignmentAPI = {
                 }
             }
         )).data;
+    },
+    deleteAssignment: async (assignmentId: string | null) => {
+        return (await axios.delete(`/assignment/${assignmentId}/delete`, axiosConfigAssignment)).data;
     }
 };

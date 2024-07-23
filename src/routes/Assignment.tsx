@@ -21,6 +21,12 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useToast } from "@/components/ui/use-toast"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 export default function Assignment() {
     const navigate = useNavigate()
@@ -30,6 +36,7 @@ export default function Assignment() {
 
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
     const [text, setText] = useState<string>('')
+    const [isConfirmDeleteAssignmentDialogOpen, setIsConfirmDeleteAssignmentDialogOpen] = useState<boolean>(false)
 
     const {data: classsroom, isLoading: isLoadingClassroom} = useQuery({
         queryKey: ['classroom', searchParams.get('assignmentId')],
@@ -65,6 +72,22 @@ export default function Assignment() {
         }
     })
 
+    const deleteAssignmentMutation = useMutation({
+        mutationFn: assignmentAPI.deleteAssignment,
+        onError: (error) => {
+            toast({
+                // @ts-ignore
+                title: error.response.data.data,
+                variant: 'destructive',
+            })
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ['assignment', searchParams.get('assignmentId')]})
+
+            navigate(`/assignments?id=${searchParams.get('roomId')}`)
+        }
+    })
+
     useEffect(() => {
         if (!searchParams.has('assignmentId')) {
             navigate('/dashboard')
@@ -86,10 +109,14 @@ export default function Assignment() {
         setUploadedFiles([])
     }
 
+    const deleteAssignment = () => {
+        deleteAssignmentMutation.mutate(searchParams.get('assignmentId'))
+    }
+
     return (
         <>        
             <div className="bg-background-950 min-h-screen min-w-screen flex relative flex-col items-center">
-                <div className="flex flex-col w-[90%] gap-8">
+                <div className="flex flex-col w-[90%] gap-8 relative">
                     <Breadcrumb className="mt-16 ml-[-10px]">
                         <BreadcrumbList className="text-text-50">
                             <BreadcrumbItem>
@@ -111,6 +138,25 @@ export default function Assignment() {
                             </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
+
+                    <div className="right-0 flex items-center absolute top-16">
+                        <Button onClick={() => {setIsConfirmDeleteAssignmentDialogOpen(true)}} className="bg-[#e74c4c] transition-colors font-bold text-text-50 hover:bg-[#b43c3c] duration-150">Delete</Button>
+
+                        <Dialog open={isConfirmDeleteAssignmentDialogOpen} onOpenChange={setIsConfirmDeleteAssignmentDialogOpen}>
+                            <DialogContent className="bg-background-950 text-text-50">
+                                <DialogHeader>
+                                    <DialogTitle className="text-2xl">Confirm</DialogTitle>
+                                </DialogHeader>
+                                <div className="flex flex-col gap-5 justify-center items-center">
+                                    <p>Are you sure you want to delete assignment: <span className="font-bold">{assignment?.title}</span></p>
+                                    <div className="flex flex-col gap-2 w-[80%]">
+                                        <Button onClick={deleteAssignment} className="bg-[#e74c4c] w-full transition-colors font-bold text-text-50 hover:bg-[#b43c3c] duration-150">YES</Button>
+                                        <Button onClick={() => {setIsConfirmDeleteAssignmentDialogOpen(false)}} className="bg-secondary-700 w-full transition-colors font-bold text-text-50 hover:bg-secondary-800 duration-150">NO</Button>
+                                    </div>
+                                </div>
+                            </DialogContent>
+                        </Dialog>
+                    </div>
 
                     <div className="flex gap-10 max-lg:flex-col">
                         <div className="flex flex-col text-text-50 w-full leading-8 gap-5">
