@@ -4,6 +4,9 @@ import Spline from '@splinetool/react-spline';
 import frendlyMeeting from '/humaaans-friend-meeting.png'
 import alarm from '/alarm.png'
 import folder from '/folders.png'
+import reserach from '/research.png'
+import dashboard from '/organized-dashboard.png'
+import stats from '/stats.png'
 
 import { Button } from "@/components/ui/button";
 
@@ -33,23 +36,24 @@ export default function Home() {
                         <Button onClick={() => navigate('/register')} className="bg-accent-300 hover:bg-accent-400 text-xl font-bold z-20 text-text-800 px-8 py-6">{'Get Started'.toUpperCase()}</Button>
                     </div>
 
-                    <Spline className="absolute top-0 left-0 right-0 bottom-0" scene="https://prod.spline.design/ql3H9YcnGmWgBqUN/scene.splinecode" />
+                    <Spline className="absolute top-0 left-0 right-0 bottom-0 max-lg:hidden" scene="https://prod.spline.design/ql3H9YcnGmWgBqUN/scene.splinecode" />
                 </div>
 
 
                 <div className="flex flex-col gap-24">
-                    <div className="w-full flex justify-center items-center text-text-50 gap-12 mt-24" id="aboutus">
+                    <div className="w-full flex justify-center max-md:flex-col items-center text-text-50 gap-12 mt-24 p-6  bg-background-800" id="aboutus">
                         <img className="w-1/3" src={frendlyMeeting} alt="" />
 
                         <div className="flex gap-3 flex-col">
-                            <h1 className="text-4xl font-bold">About Us</h1>
-                            <p className="max-w-[80ch] text-lg">Your ultimate platform for submitting and managing homework online. Designed for students and teachers, our intuitive interface ensures a seamless and efficient experience</p>
+                            <h1 className="text-4xl font-bold max-md:text-center">About Us</h1>
+                            <p className="max-w-[80ch] text-lg max-md:text-center">Your ultimate platform for submitting and managing homework online. Designed for students and teachers, our intuitive interface ensures a seamless and efficient experience</p>
                         </div>
                     </div>
 
                     <div className="w-full flex justify-center items-center flex-col text-text-50 gap-12" id="forstudents">
                         <h1 className="text-4xl font-bold">For Students</h1>
-                        <div className="flex gap-20">
+
+                        <div className="flex gap-20 max-md:flex-col">
                             <div className="flex flex-col gap-5">
                                 <div className="flex-col flex gap-5 justify-center items-center">
                                     <p className="max-w-[80ch] text-center font-bold text-xl">Easy Submission</p>
@@ -70,18 +74,25 @@ export default function Home() {
 
                     <div className="w-full flex justify-center items-center flex-col text-text-50 gap-12" id="forteachers">
                         <h1 className="text-4xl font-bold">For Teachers</h1>
-                        <div className="flex gap-20">
+
+                        <div className="flex gap-20 flex-col">
                             <div className="flex flex-col gap-5">
-                                <div className="flex-col flex gap-2">
-                                    <p className="max-w-[80ch] text-center font-bold text-xl">Streamlined Grading</p>
-                                    <p className="max-w-[80ch] text-center">Access and evaluate student submissions from any device</p>
+                                <div className="flex gap-2 justify-center items-center max-md:flex-col">
+                                    <img src={stats} alt="" />
+                                    <div className="flex flex-col gap-2">
+                                        <p className="max-w-[80ch] max-md:text-center font-bold text-xl">Streamlined Grading</p>
+                                        <p className="max-w-[80ch] max-md:text-center">Access and evaluate student submissions from any device</p>
+                                    </div>
                                 </div>
                             </div>
 
                             <div className="flex flex-col gap-5">
-                                <div className="flex-col flex gap-2">
-                                    <p className="max-w-[80ch] text-center font-bold text-xl">Organized Workflow</p>
-                                    <p className="max-w-[80ch] text-center">Manage classes and assignments effortlessly with our organized dashboard</p>
+                                <div className="flex gap-2 justify-center items-center max-md:flex-col-reverse">
+                                    <div className="flex flex-col gap-2">
+                                        <p className="max-w-[80ch font-bold text-end text-xl max-md:text-center">Organized Workflow</p>
+                                        <p className="max-w-[80ch] text-end max-md:text-center">Manage classes and assignments effortlessly with our organized dashboard</p>
+                                    </div>
+                                    <img src={dashboard} className="scale-90" alt="" />
                                 </div>
                             </div>
                         </div>
