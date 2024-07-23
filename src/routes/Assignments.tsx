@@ -104,6 +104,18 @@ export default function Assignments() {
         setFilter(e.target.value)
     }
 
+    const filterAssingments = !isLoadingAssignments && assignments?.filter((assignment) => {
+        if (filter === 'all') {
+            return assignment
+        }
+        else if (filter === 'done' && assignment.completed) {
+            return assignment
+        }
+        else if (filter === 'todo' && !assignment.completed) {
+            return assignment
+        }
+    })
+
     const handleNewAssignmentOnChange = (e: any) => {
         setNewAssignment({...newAssignment, [e.target.name]: e.target.value})
     }
@@ -162,8 +174,8 @@ export default function Assignments() {
                                 </Label>
 
                                 <Label htmlFor="completed" className="cursor-pointer border-y border-text-300">
-                                    <input onChange={handleFilterSelect} type="radio" value="completed" id="completed" name="filter" className="hidden" checked={filter === 'completed'} />
-                                    <div className="label-checked:bg-background-800 hover:bg-background-700 p-3">Completed</div>
+                                    <input onChange={handleFilterSelect} type="radio" value="done" id="completed" name="filter" className="hidden" checked={filter === 'done'} />
+                                    <div className="label-checked:bg-background-800 hover:bg-background-700 p-3">Done</div>
                                 </Label>
 
                                 <Label htmlFor="todo" className="cursor-pointer border-y border-r border-text-300 rounded-r-md">
@@ -184,7 +196,8 @@ export default function Assignments() {
 
                     {
                         !isLoadingAssignments &&
-                        <AssignmentsTable assignments={assignments} className="pb-5 max-sm:mt-6"/>
+                        // @ts-ignore
+                        <AssignmentsTable assignments={filterAssingments} className="pb-5 max-sm:mt-6"/>
                     }
                 </div>
             </div>
