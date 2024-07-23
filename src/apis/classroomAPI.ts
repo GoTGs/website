@@ -27,4 +27,10 @@ export const classroomAPI = {
     removeMemberFromClassroom: async (classroomId: string | null, id?: string) => {
         return (await axios.delete(`/classroom/${classroomId}/member/${id}/remove`, axiosConfigClassrooms)).data;
     },
+    deleteRoom: async (id: string | unknown) => {
+        return (await axios.delete(`/classroom/${id}/delete`, axiosConfigClassrooms)).data;
+    },
+    updateClassroom: async ({id, name} : {id: string | unknown, name: string}) => {
+        return (await axios.put(`/classroom/${id}/rename`, {name}, axiosConfigClassrooms)).data;
+    }
 };

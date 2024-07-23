@@ -50,6 +50,11 @@ export default function Assignments() {
     const [newAssignment, setNewAssignment] = useState<{title: string, description: string}>( {title: '', description: '' })
     const [newAssignmentDate, setNewAssignmentDate] = useState<Date | undefined>(undefined)
 
+    const [isDeleteRoomDialogOpened, setIsDeleteRoomDialogOpened] = useState<boolean>(false)
+    const [isRenameRoomDialogOpened, setIsRenameRoomDialogOpened] = useState<boolean>(false)
+
+    const [newName, setNewName] = useState<string>('')
+
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
     
     const {data: classsroom, isLoading: isLoadingClassroom} = useQuery({
@@ -94,6 +99,39 @@ export default function Assignments() {
     }, [])
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({onDrop})
+
+    const deleteRoomMutation = useMutation({
+        mutationFn: classroomAPI.deleteRoom,
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ['user']})
+            navigate('/dashboard')
+        },
+        onError: (error) => {
+            toast({
+                // @ts-ignore
+                title: error.response.data.data,
+                variant: 'destructive',
+            })
+        }
+    })
+
+    const renameRoomMutation = useMutation({
+        mutationFn: classroomAPI.updateClassroom,
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ['classroom', searchParams.get('id') ]})
+            toast({
+                title: 'Room renamed',
+                description: 'The room has been renamed',
+            })
+        },
+        onError: (error) => {
+            toast({
+                // @ts-ignore
+                title: error.response.data.data,
+                variant: 'destructive',
+            })
+        }
+    })
 
     useEffect(() => {
         if (!searchParams.has('id')) {
@@ -153,6 +191,22 @@ export default function Assignments() {
         setIsNewAssignmentDialogOpen(false)
     }
 
+    const deleteRoom = () => {
+        deleteRoomMutation.mutate(searchParams.get('id'))
+    }
+
+    const handleRenameRoom = (e: any) => {
+        e.preventDefault()
+
+        if (newName === '') {
+            return
+        }
+
+        renameRoomMutation.mutate({id: searchParams.get('id'), name: newName})
+
+        setIsRenameRoomDialogOpened(false)
+    }
+
     return (
         <>
             <div className="bg-background-950 min-h-screen min-w-screen flex relative flex-col items-center">
@@ -178,7 +232,7 @@ export default function Assignments() {
                     </div>
 
                     <div className="relative flex w-full text-text-50 gap-3">
-                        <div className="flex gap-3 max-sm:flex-col items-center">
+                        <div className="flex gap-3 max-lg:flex-col items-center max-lg:mb-14">
                             <div className="flex">
                                     <Label htmlFor="all" className="cursor-pointer border-y border-l border-text-300 rounded-l-md">
                                         <input onChange={handleFilterSelect} type="radio" value="all" id="all" className="hidden" name="filter" checked={filter === 'all'} />
@@ -223,9 +277,11 @@ export default function Assignments() {
                         {
                             !isLoadingUser && 
                             user?.role === 'admin' || user?.role === 'teacher'?
-                            <div className="absolute right-0 flex gap-3 max-sm:flex-col">
+                            <div className="absolute right-0 flex gap-3 max-lg:flex-col">
                                 <Button onClick={() => {setIsNewAssignmentDialogOpen(true)}} className="text-text-50 px-6 py-4 bg-primary-700 hover:bg-primary-800">New Assignment</Button>
                                 <Button onClick={() => navigate(`/members?roomId=${searchParams.get('id')}`)} className="text-text-50 px-6 py-4 bg-primary-700 hover:bg-primary-800">Members</Button>
+                                <Button onClick={() => {setIsRenameRoomDialogOpened(true)}} className="text-text-50 px-6 py-4 bg-primary-700 hover:bg-primary-800">Rename</Button>
+                                {!isLoadingUser && user?.role === 'admin' && <Button onClick={() => {setIsDeleteRoomDialogOpened(true)}} className="bg-[#e74c4c] transition-colors font-bold text-text-50 hover:bg-[#b43c3c] duration-150">Delete</Button>}
                             </div>: null
                         }
                     </div>
@@ -233,10 +289,39 @@ export default function Assignments() {
                     {
                         !isLoadingAssignments &&
                         // @ts-ignore
-                        <AssignmentsTable assignments={filterAssingments} className="pb-5 max-sm:mt-6"/>
+                        <AssignmentsTable assignments={filterAssingments} className="pb-5 max-lg:mt-6"/>
                     }
                 </div>
             </div>
+
+            <Dialog open={isRenameRoomDialogOpened} onOpenChange={setIsRenameRoomDialogOpened}>
+                <DialogContent className="bg-background-950 text-text-50">
+                    <DialogHeader>
+                        <DialogTitle className="text-2xl">Rename</DialogTitle>
+                    </DialogHeader>
+                    <form onSubmit={handleRenameRoom} className="flex flex-col gap-5 justify-center items-center">
+                        <div className="flex flex-col gap-5 w-[80%]">
+                            <Input onChange={(e) => {setNewName(e.target.value)}} placeholder="Enter new name" className="text-text-50"/>
+                            <Button type="submit" className="bg-primary-700 w-full transition-colors font-bold text-text-50 hover:bg-primary-800 duration-150">Confirm</Button>
+                        </div>
+                    </form>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={isDeleteRoomDialogOpened} onOpenChange={setIsDeleteRoomDialogOpened}>
+                <DialogContent className="bg-background-950 text-text-50">
+                    <DialogHeader>
+                        <DialogTitle className="text-2xl">Confirm</DialogTitle>
+                    </DialogHeader>
+                    <div className="flex flex-col gap-5 justify-center items-center">
+                        <p>Are you sure you want to delete room: <span className="font-bold">{classsroom?.name}</span></p>
+                        <div className="flex flex-col gap-2 w-[80%]">
+                            <Button onClick={deleteRoom} className="bg-[#e74c4c] w-full transition-colors font-bold text-text-50 hover:bg-[#b43c3c] duration-150">YES</Button>
+                            <Button onClick={() => {setIsDeleteRoomDialogOpened(false)}} className="bg-secondary-700 w-full transition-colors font-bold text-text-50 hover:bg-secondary-800 duration-150">NO</Button>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
 
             <Dialog open={isNewAssignmentDialogOpen} onOpenChange={setIsNewAssignmentDialogOpen} >                        
                 <DialogContent className="bg-background-950 text-text-50 min-w-[60%] min-h-[60%]">

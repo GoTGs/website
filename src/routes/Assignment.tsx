@@ -6,6 +6,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { classroomAPI } from "@/apis/classroomAPI"
 import { assignmentAPI } from "@/apis/assignmentAPI"
+import { userAPI } from "@/apis/userAPI"
 
 import FileEntry from "@/components/FileEntry"
 
@@ -46,6 +47,11 @@ export default function Assignment() {
     const {data: assignment, isLoading: isLoadingAssignment} = useQuery({
         queryKey: ['assignment', searchParams.get('assignmentId')],
         queryFn: () => assignmentAPI.getAssignment(searchParams.get('assignmentId')),
+    })
+
+    const {data: user, isLoading: isLoadingUser } = useQuery({
+        queryKey: ['user'],
+        queryFn: userAPI.getUser,
     })
 
     const onDrop  = useCallback((file: any) => {
@@ -140,7 +146,7 @@ export default function Assignment() {
                     </Breadcrumb>
 
                     <div className="right-0 flex items-center absolute top-16">
-                        <Button onClick={() => {setIsConfirmDeleteAssignmentDialogOpen(true)}} className="bg-[#e74c4c] transition-colors font-bold text-text-50 hover:bg-[#b43c3c] duration-150">Delete</Button>
+                        {!isLoadingUser && user?.role === 'admin' && <Button onClick={() => {setIsConfirmDeleteAssignmentDialogOpen(true)}} className="bg-[#e74c4c] transition-colors font-bold text-text-50 hover:bg-[#b43c3c] duration-150">Delete</Button>}
 
                         <Dialog open={isConfirmDeleteAssignmentDialogOpen} onOpenChange={setIsConfirmDeleteAssignmentDialogOpen}>
                             <DialogContent className="bg-background-950 text-text-50">
@@ -237,7 +243,7 @@ export default function Assignment() {
                             {
                                 // @ts-ignore
                                 assignment?.submissions?.length == 0 &&
-                                <Button className="bg-primary-800 hover:bg-primary-700 text-text-50 font-bold text-xl">Submit</Button>
+                                <Button className="bg-primary-700 hover:bg-primary-800 text-text-50 font-bold text-xl">Submit</Button>
                             }
                         </form>
                     </div>
