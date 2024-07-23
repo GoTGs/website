@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom"
 
 import NavElement from "./NavElement"
-import PinnedClassElement from "./PinnedClassElement"
+// import PinnedClassElement from "./PinnedClassElement"
 
 import { Home, CircleUser, Users } from "lucide-react"
 
@@ -21,11 +21,11 @@ export default function Nav({ className, role }: { className?: string, role?: st
                         <NavElement title="Users" icon={<Users/>} active={location.pathname === '/users'} onClick={() => {navigate('/users')}}/>
                     }
                 </div>
-                <h1 className="font-bold text-lg mt-10 ml-5">Pinned</h1> 
+                {/* <h1 className="font-bold text-lg mt-10 ml-5">Pinned</h1> 
                 <div className="flex flex-col items-center mt-5 gap-1">
                     <PinnedClassElement title="Methematics" onClick={() => {}}/>
                     <PinnedClassElement title="Art" onClick={() => {}}/>
-                </div>
+                </div> */}
             </div>
         </>
     )

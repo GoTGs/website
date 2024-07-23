@@ -45,6 +45,7 @@ export default function Assignments() {
 
     const [isNewAssignmentDialogOpen, setIsNewAssignmentDialogOpen] = useState<boolean>(false)
     const [filter, setFilter] = useState<string>('all')
+    const [filterDate, setFilterDate] = useState<Date | undefined>(undefined)
 
     const [newAssignment, setNewAssignment] = useState<{title: string, description: string}>( {title: '', description: '' })
     const [newAssignmentDate, setNewAssignmentDate] = useState<Date | undefined>(undefined)
@@ -104,7 +105,7 @@ export default function Assignments() {
         setFilter(e.target.value)
     }
 
-    const filterAssingments = !isLoadingAssignments && assignments?.filter((assignment) => {
+    let filterAssingments = !isLoadingAssignments && assignments?.filter((assignment) => {
         if (filter === 'all') {
             return assignment
         }
@@ -115,6 +116,16 @@ export default function Assignments() {
             return assignment
         }
     })
+
+    if(filterDate) {
+        // @ts-ignore
+        filterAssingments = filterAssingments?.filter((assignment: any) => {
+            if (moment(assignment.dueDate, 'DD-MM-YYYY').isSame(moment(filterDate, 'DD-MM-YYYY'), 'date')) {
+                console.log(assignment.dueDate)
+                return assignment
+            }
+        })
+    }
 
     const handleNewAssignmentOnChange = (e: any) => {
         setNewAssignment({...newAssignment, [e.target.name]: e.target.value})
@@ -166,22 +177,47 @@ export default function Assignments() {
                         <h1 className="text-text-300 text-lg mt-2">Your assignments</h1>
                     </div>
 
-                    <div className="relative flex w-full text-text-50">
-                        <div className="flex">
-                                <Label htmlFor="all" className="cursor-pointer border-y border-l border-text-300 rounded-l-md">
-                                    <input onChange={handleFilterSelect} type="radio" value="all" id="all" className="hidden" name="filter" checked={filter === 'all'} />
-                                    <div className="label-checked:bg-background-800 hover:bg-background-700 p-3 rounded-l-md">All</div>
-                                </Label>
+                    <div className="relative flex w-full text-text-50 gap-3">
+                        <div className="flex gap-3 max-sm:flex-col items-center">
+                            <div className="flex">
+                                    <Label htmlFor="all" className="cursor-pointer border-y border-l border-text-300 rounded-l-md">
+                                        <input onChange={handleFilterSelect} type="radio" value="all" id="all" className="hidden" name="filter" checked={filter === 'all'} />
+                                        <div className="label-checked:bg-background-800 hover:bg-background-700 p-3 rounded-l-md">All</div>
+                                    </Label>
 
-                                <Label htmlFor="completed" className="cursor-pointer border-y border-text-300">
-                                    <input onChange={handleFilterSelect} type="radio" value="done" id="completed" name="filter" className="hidden" checked={filter === 'done'} />
-                                    <div className="label-checked:bg-background-800 hover:bg-background-700 p-3">Done</div>
-                                </Label>
+                                    <Label htmlFor="completed" className="cursor-pointer border-y border-text-300">
+                                        <input onChange={handleFilterSelect} type="radio" value="done" id="completed" name="filter" className="hidden" checked={filter === 'done'} />
+                                        <div className="label-checked:bg-background-800 hover:bg-background-700 p-3">Done</div>
+                                    </Label>
 
-                                <Label htmlFor="todo" className="cursor-pointer border-y border-r border-text-300 rounded-r-md">
-                                    <input onChange={handleFilterSelect} type="radio" value="todo" id="todo" name="filter" className="hidden" checked={filter === 'todo'} />
-                                    <div className="label-checked:bg-background-800 p-3 rounded-r-md hover:bg-background-700">Todo</div>
-                                </Label>
+                                    <Label htmlFor="todo" className="cursor-pointer border-y border-r border-text-300 rounded-r-md">
+                                        <input onChange={handleFilterSelect} type="radio" value="todo" id="todo" name="filter" className="hidden" checked={filter === 'todo'} />
+                                        <div className="label-checked:bg-background-800 p-3 rounded-r-md hover:bg-background-700">Todo</div>
+                                    </Label>
+                            </div>
+
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <Button variant="outline" className="relative flex justify-center w-[200px]">
+                                            {
+                                            filterDate? 
+                                            <span className="absolute left-2 text-text-50 font-semibold">{filterDate.toDateString()}</span>:
+                                            <span className="absolute left-2 text-text-500 font-semibold">Filter by date</span>
+                                        }
+
+                                        <CalendarIcon className="absolute right-2 m-auto text-text-500"/>
+                                    </Button>
+                                </PopoverTrigger>
+
+                                <PopoverContent className="w-auto p-0" align="start">
+                                    <Calendar
+                                        mode="single"
+                                        selected={filterDate}
+                                        onSelect={setFilterDate}
+                                        className="rounded-md bg-background-950 text-text-50"
+                                    />
+                                </PopoverContent>
+                            </Popover>
                         </div>
 
                         {
