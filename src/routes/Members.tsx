@@ -27,6 +27,8 @@ import {
 } from "@/components/ui/dialog"
 import { useToast } from "@/components/ui/use-toast"
 
+import { Bars } from 'react-loader-spinner'
+
 export default function Members() {
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
@@ -111,6 +113,21 @@ export default function Members() {
     
     return (
         <>
+            {
+                removeMemberFromClassroomMutation.isPending || addUserToClassroomMutation.isPending?
+                <div className="absolute top-0 left-0 right-0 bottom-0 z-30 bg-[#ffffff20] flex justify-center items-center">
+                    <Bars
+                        height="80"
+                        width="80"
+                        color="#ff7a33"
+                        ariaLabel="bars-loading"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                        visible={true}
+                        />
+                </div>: null
+            }
+
             <div className="bg-background-950 min-h-screen min-w-screen flex relative flex-col items-center">
                 <div className="flex flex-col w-[90%] gap-8">
                     <Breadcrumb className="mt-16 ml-[-10px]">
@@ -153,12 +170,13 @@ export default function Members() {
                         </div>
 
                         {
-                            !isLoadingMembers &&
+                            !isLoadingMembers?
                             // @ts-ignore
                             filteredMembers?.map(member => (
                                 member?.role !== 'admin') && 
                                 <MemberEntry key={member?.id} firstName={member?.first_name} lastName={member.last_name} email={member.email} role={member.role} onRemove={() => {removeMemberFromClassroomMutation.mutate(member?.id)}} isAdmin={user?.role === 'admin'}/>
-                            )
+                            ):
+                            <Skeleton className="w-full h-10 bg-[#88888850] rounded-lg" />
                         }
                     </div>
                 </div>
@@ -182,13 +200,13 @@ export default function Members() {
                                     <div className="absolute flex flex-col w-full border-white border-[1px] border-t-0">
                                         {
                                             // @ts-ignore
-                                            !isLoadingUsers && filteredUsers?.map((user: any) => {
+                                            !isLoadingUsers? filteredUsers?.map((user: any) => {
                                                 return (
                                                     <div onClick={() => setAddMemberEmail(user.email)} key={user?.id} className="bg-background-900 hover:bg-background-950 flex w-full cursor-pointer px-6 py-2">
                                                         <h1 className="grow">{user?.email}</h1>
                                                     </div>
                                                 )
-                                            })
+                                            }): <Skeleton className="w-full h-10 bg-[#88888850] rounded-lg" />
                                         }
                                     </div>
                                 }

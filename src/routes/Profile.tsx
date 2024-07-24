@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/dialog"
 import { useToast } from "@/components/ui/use-toast"
 
+import { Bars } from 'react-loader-spinner'
 
 export default function Profile() {
     const queryClient = useQueryClient()    
@@ -164,6 +165,21 @@ export default function Profile() {
 
     return (
         <>
+            {
+                updateUserMutation.isPending || loginMutation.isPending?
+                <div className="absolute top-0 left-0 right-0 bottom-0 z-30 bg-[#ffffff20] flex justify-center items-center">
+                    <Bars
+                        height="80"
+                        width="80"
+                        color="#ff7a33"
+                        ariaLabel="bars-loading"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                        visible={true}
+                        />
+                </div>: null
+            }
+
             <div className="bg-background-950 min-h-screen min-w-screen flex relative">
                 <Menu onClick={() => {setMenuOpen(true)}} className="lg:hidden absolute w-12 h-12 top-3 text-text-50 hover:scale-105 active:scale-100 cursor-pointer left-4 z-10"/>
                 {menuOpen && <Plus onClick={() => {setMenuOpen(false)}} className="lg:hidden rotate-45 absolute w-12 h-12 top-5 text-text-50 hover:scale-105 active:scale-100 cursor-pointer right-5 z-30"/>}

@@ -23,6 +23,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
+import { Bars } from 'react-loader-spinner'
+
 export default function Dashboard() {
     const queryClient = useQueryClient()
     const navigate = useNavigate()
@@ -67,6 +69,21 @@ export default function Dashboard() {
 
     return (
         <>
+            {
+                createClassroomMutation.isPending &&
+                <div className="absolute top-0 left-0 right-0 bottom-0 z-30 bg-[#ffffff20] flex justify-center items-center">
+                    <Bars
+                        height="80"
+                        width="80"
+                        color="#ff7a33"
+                        ariaLabel="bars-loading"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                        visible={true}
+                        />
+                </div>
+            }
+
             <div className="bg-background-950 min-h-screen min-w-screen flex relative">
                 {
                     !isLoadingUser? 

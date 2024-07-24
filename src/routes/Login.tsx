@@ -11,6 +11,8 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { useToast } from "@/components/ui/use-toast"
 
+import { Bars } from 'react-loader-spinner';
+
 export default function Login() {
     const navigate = useNavigate();
     const { toast } = useToast()
@@ -61,6 +63,21 @@ export default function Login() {
 
     return (
         <>
+            {
+                loginUserMutation.isPending?
+                <div className="absolute top-0 left-0 right-0 bottom-0 z-30 bg-[#ffffff20] flex justify-center items-center">
+                    <Bars
+                        height="80"
+                        width="80"
+                        color="#ff7a33"
+                        ariaLabel="bars-loading"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                        visible={true}
+                        />
+                </div>: null
+            }
+
             <div className="bg-background-900 min-h-screen min-w-screen flex">
                 <div className='w-1/2 h-full max-lg:absolute max-lg:left-[-1000px]'>
                     <BurningPage />

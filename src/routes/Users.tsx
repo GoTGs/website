@@ -27,6 +27,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Skeleton } from "@/components/ui/skeleton"
+
+import { Bars } from 'react-loader-spinner'
 
 export default function Users() {
     const navigate = useNavigate()
@@ -105,6 +108,21 @@ export default function Users() {
 
     return (
         <>
+            {
+                updateUserMutation.isPending?
+                <div className="absolute top-0 left-0 right-0 bottom-0 z-30 bg-[#ffffff20] flex justify-center items-center">
+                    <Bars
+                        height="80"
+                        width="80"
+                        color="#ff7a33"
+                        ariaLabel="bars-loading"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                        visible={true}
+                        />
+                </div>: null
+            }
+
             <div className="bg-background-950 min-h-screen min-w-screen flex relative justify-center">
                 <Menu onClick={() => {setMenuOpen(true)}} className="lg:hidden absolute w-12 h-12 top-3 text-text-50 hover:scale-105 active:scale-100 cursor-pointer left-4"/>
                 {menuOpen && <Plus onClick={() => {setMenuOpen(false)}} className="lg:hidden rotate-45 absolute w-12 h-12 top-5 text-text-50 hover:scale-105 active:scale-100 cursor-pointer right-5 z-30"/>}
@@ -127,12 +145,13 @@ export default function Users() {
                             </div>
 
                             {
-                                !isLoadingUser &&
+                                !isLoadingUser?
                                 // @ts-ignore
                                 filteredUsers?.map(member => (
                                     member?.role !== 'admin') && 
                                     <MemberEntry key={member?.id} firstName={member?.first_name} lastName={member.last_name} email={member.email} role={member.role} onEdit={() => {setIsEditMemberDialogOpen(true); setEditUserId(member?.id)}} isAdmin={user?.role === 'admin'}/>
-                                )
+                                ):
+                                <Skeleton className="w-full h-10 bg-[#88888850]"/>
                             }
                         </div>
                     </div>

@@ -35,6 +35,8 @@ import {
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
 import { Input } from "@/components/ui/input"
 
+import { Bars } from 'react-loader-spinner'
+
 export default function Assignment() {
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
@@ -199,6 +201,21 @@ export default function Assignment() {
 
     return (
         <>        
+            {
+                addSubmissionMutation.isPending || editAssignmentMutation.isPending || deleteAssignmentMutation.isPending?
+                <div className="absolute top-0 left-0 right-0 bottom-0 z-30 bg-[#ffffff20] flex justify-center items-center">
+                    <Bars
+                        height="80"
+                        width="80"
+                        color="#ff7a33"
+                        ariaLabel="bars-loading"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                        visible={true}
+                        />
+                </div>: null
+            }
+
             <div className="bg-background-950 min-h-screen min-w-screen flex relative flex-col items-center">
                 <div className="flex flex-col w-[90%] gap-8 relative">
                     <Breadcrumb className="mt-16 ml-[-10px]">

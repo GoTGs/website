@@ -37,6 +37,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
 import { useToast } from "@/components/ui/use-toast"
 
+import { Bars } from 'react-loader-spinner'
+
 export default function Assignments() {
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
@@ -219,6 +221,21 @@ export default function Assignments() {
 
     return (
         <>
+            {
+                createAssignmentMutataion.isPending || renameRoomMutation.isPending || deleteRoomMutation.isPending?
+                <div className="absolute top-0 left-0 right-0 bottom-0 z-30 bg-[#ffffff20] flex justify-center items-center">
+                    <Bars
+                        height="80"
+                        width="80"
+                        color="#ff7a33"
+                        ariaLabel="bars-loading"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                        visible={true}
+                        />
+                </div>: null
+            }
+
             <div className="bg-background-950 min-h-screen min-w-screen flex relative flex-col items-center">
                 <div className="flex flex-col w-[90%] gap-8">
                     <div>
@@ -300,9 +317,10 @@ export default function Assignments() {
                     </div>
 
                     {
-                        !isLoadingAssignments &&
+                        !isLoadingAssignments?
                         // @ts-ignore
-                        <AssignmentsTable assignments={filterAssingments} className="pb-5 max-lg:mt-6"/>
+                        <AssignmentsTable assignments={filterAssingments} className="pb-5 max-lg:mt-6"/>:
+                        <Skeleton className="w-full h-96 bg-[#88888850] rounded-lg" />
                     }
                 </div>
             </div>
