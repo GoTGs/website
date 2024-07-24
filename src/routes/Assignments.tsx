@@ -345,10 +345,10 @@ export default function Assignments() {
                     <form onSubmit={handleNewAssignmentSubmit} className="mt-4 flex w-full justify-center">
                         <div className="w-[90%] flex flex-col gap-5">
                             <div className="w-full flex flex-col gap-3">
-                                <Input onChange={handleNewAssignmentOnChange} placeholder="Enter assignment title" name="title" className="text-text-50" />
+                                <Input onChange={handleNewAssignmentOnChange} placeholder="*Enter assignment title" name="title" className="text-text-50" />
 
                                 <div>
-                                    <Textarea onChange={handleNewAssignmentOnChange} name="description" placeholder="Enter assignment discription" className="resize-none text-text-50 text-md border-b-none rounded-b-none" rows={12}/>
+                                    <Textarea onChange={handleNewAssignmentOnChange} name="description" placeholder="Enter assignment discription (optional)" className="resize-none text-text-50 text-md border-b-none rounded-b-none" rows={12}/>
 
                                     <div className={`bg-background-800 border-white border-l border-r border-b rounded-b-md relative text-text-50 p-4 ${isDragActive? 'bg-background-700' : ''}`} {...getRootProps()}>
                                         <input {...getInputProps()} />
@@ -379,7 +379,7 @@ export default function Assignments() {
                                                 {
                                                 newAssignmentDate? 
                                                 <span className="absolute left-2 text-text-50 font-semibold">{newAssignmentDate.toDateString()}</span>:
-                                                <span className="absolute left-2 text-text-500 font-semibold">Pick a due date</span>
+                                                <span className="absolute left-2 text-text-500 font-semibold">*Pick a due date</span>
                                             }
 
                                             <CalendarIcon className="absolute right-2 m-auto text-text-500"/>
@@ -395,7 +395,10 @@ export default function Assignments() {
                                     </PopoverContent>
                                 </Popover>
                             </div>
-                            <Button type="submit" className="bg-primary-700 text-text-50 hover:bg-primary-800 font-semibold w-full">New Assignment</Button>
+                            {
+                                newAssignment.title !== '' && newAssignmentDate &&
+                                <Button type="submit" className="bg-primary-700 text-text-50 hover:bg-primary-800 font-semibold w-full">New Assignment</Button>
+                            }
                         </div>
                     </form>
                 </DialogContent>
