@@ -4,7 +4,6 @@ import Spline from '@splinetool/react-spline';
 import frendlyMeeting from '/humaaans-friend-meeting.png'
 import alarm from '/alarm.png'
 import folder from '/folders.png'
-import reserach from '/research.png'
 import dashboard from '/organized-dashboard.png'
 import stats from '/stats.png'
 
