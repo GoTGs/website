@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/dialog"
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
 import { Input } from "@/components/ui/input"
+import { TimePicker } from "@/components/ui/datetime"
 
 import { Bars } from 'react-loader-spinner'
 
@@ -50,6 +51,7 @@ export default function Assignment() {
     const [isEditDialogOpen, setIsEditDialogOpen] = useState<boolean>(false)
 
     const [newAssignmentDate, setNewAssignmentDate] = useState<Date | undefined>(undefined)
+    const [editAssignmentTime, setEditAssignmentTime] = useState<Date | undefined>(undefined)
     const [editedAssignment, setEditedAssignment] = useState<AssignmentEditDataType | null>(null)
 
     const {data: classsroom, isLoading: isLoadingClassroom} = useQuery({
@@ -148,6 +150,7 @@ export default function Assignment() {
         })
 
         setNewAssignmentDate(moment(assignment?.dueDate, 'DD-MM-YYYY').toDate())
+        setEditAssignmentTime(moment(moment(assignment?.dueDate, 'DD-MM-YYYY HH:mm:ss').format('HH:mm:ss'), 'HH:mm:ss').toDate())
     }, [assignment])
 
     useEffect(() => {
@@ -155,6 +158,12 @@ export default function Assignment() {
             setEditedAssignment(prev => ({...prev, dueDate: moment(newAssignmentDate).format('DD-MM-YYYY')}))
         }
     }, [newAssignmentDate])
+
+    useEffect(() => {
+        if (editAssignmentTime) {
+            setEditedAssignment(prev => ({...prev, dueDate: moment(newAssignmentDate).format('DD-MM-YYYY') + ' ' + moment(editAssignmentTime).format('HH:mm:ss')}))
+        }
+    }, [editAssignmentTime])
 
     const handleAddSubmission = (e: any) => {
         e.preventDefault()
@@ -271,6 +280,15 @@ export default function Assignment() {
                             {
                                 !isLoadingAssignment?
                                 <p className="text-justify">{assignment?.description}</p>:
+                                <Skeleton className="w-full h-6 bg-[#88888850] rounded-lg" />
+                            }
+
+                            {
+                                !isLoadingAssignment?
+                                <span className="flex gap-3">
+                                    <CalendarIcon /> 
+                                    <p className="text-justify">{assignment?.dueDate}</p>
+                                </span>:
                                 <Skeleton className="w-full h-6 bg-[#88888850] rounded-lg" />
                             }
 
@@ -416,27 +434,34 @@ export default function Assignment() {
                                     </div>
                                 }
 
-                                <Popover>
-                                    <PopoverTrigger asChild>
-                                        <Button variant="outline" className="relative flex justify-center w-1/3">
-                                                {
-                                                newAssignmentDate? 
-                                                <span className="absolute left-2 text-text-50 font-semibold">{newAssignmentDate.toDateString()}</span>:
-                                                <span className="absolute left-2 text-text-500 font-semibold">*Pick a due date</span>
-                                            }
+                                <div className="flex flex-col gap-5 justify-center items-start">
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <Button variant="outline" className="relative flex justify-center w-1/3">
+                                                    {
+                                                    newAssignmentDate? 
+                                                    <span className="absolute left-2 text-text-50 font-semibold">{newAssignmentDate.toDateString()}</span>:
+                                                    <span className="absolute left-2 text-text-500 font-semibold">*Pick a due date</span>
+                                                }
 
-                                            <CalendarIcon className="absolute right-2 m-auto text-text-500"/>
-                                        </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-auto p-0" align="start">
-                                        <Calendar
-                                            mode="single"
-                                            selected={newAssignmentDate}
-                                            onSelect={setNewAssignmentDate}
-                                            className="rounded-md bg-background-950 text-text-50"
-                                        />
-                                    </PopoverContent>
-                                </Popover>
+                                                <CalendarIcon className="absolute right-2 m-auto text-text-500"/>
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-auto p-0" align="start">
+                                            <Calendar
+                                                mode="single"
+                                                selected={newAssignmentDate}
+                                                onSelect={setNewAssignmentDate}
+                                                className="rounded-md bg-background-950 text-text-50"
+                                            />
+                                        </PopoverContent>
+                                    </Popover>
+
+                                    <div className="flex flex-col gap-2">
+                                        <p className="font-bold text-sm">Due hour (optional)</p>
+                                        <TimePicker date={editAssignmentTime} onChange={setEditAssignmentTime} />
+                                    </div>
+                                </div>
                             </div>
 
                             {

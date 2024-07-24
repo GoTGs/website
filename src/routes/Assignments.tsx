@@ -35,6 +35,7 @@ import { Calendar } from "@/components/ui/calendar"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
+import { TimePicker } from "@/components/ui/datetime"
 import { useToast } from "@/components/ui/use-toast"
 
 import { Bars } from 'react-loader-spinner'
@@ -52,6 +53,7 @@ export default function Assignments() {
 
     const [newAssignment, setNewAssignment] = useState<{title: string, description: string}>( {title: '', description: '' })
     const [newAssignmentDate, setNewAssignmentDate] = useState<Date | undefined>(undefined)
+    const [newAssignmentTime, setNewAssignmentTime] = useState<Date | undefined>(undefined)
 
     const [isDeleteRoomDialogOpened, setIsDeleteRoomDialogOpened] = useState<boolean>(false)
     const [isRenameRoomDialogOpened, setIsRenameRoomDialogOpened] = useState<boolean>(false)
@@ -191,7 +193,7 @@ export default function Assignments() {
         const newAssignmentData: AssignmentCreateDataType = {
             title: newAssignment.title,
             description: newAssignment.description,
-            dueDate: moment(newAssignmentDate).format('DD-MM-YYYY'),
+            dueDate: moment(newAssignmentDate).format('DD-MM-YYYY') + ' ' + moment(newAssignmentTime).format('HH:mm:ss'),
             files: uploadedFiles
         }
 
@@ -391,27 +393,34 @@ export default function Assignments() {
                                     </div>
                                 }
 
-                                <Popover>
-                                    <PopoverTrigger asChild>
-                                        <Button variant="outline" className="relative flex justify-center w-1/3">
-                                                {
-                                                newAssignmentDate? 
-                                                <span className="absolute left-2 text-text-50 font-semibold">{newAssignmentDate.toDateString()}</span>:
-                                                <span className="absolute left-2 text-text-500 font-semibold">*Pick a due date</span>
-                                            }
+                                <div className="flex flex-col gap-5 justify-center items-start">
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <Button variant="outline" className="relative flex justify-center w-1/3">
+                                                    {
+                                                    newAssignmentDate? 
+                                                    <span className="absolute left-2 text-text-50 font-semibold">{newAssignmentDate.toDateString()}</span>:
+                                                    <span className="absolute left-2 text-text-500 font-semibold">*Pick a due date</span>
+                                                }
 
-                                            <CalendarIcon className="absolute right-2 m-auto text-text-500"/>
-                                        </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-auto p-0" align="start">
-                                        <Calendar
-                                            mode="single"
-                                            selected={newAssignmentDate}
-                                            onSelect={setNewAssignmentDate}
-                                            className="rounded-md bg-background-950 text-text-50"
-                                        />
-                                    </PopoverContent>
-                                </Popover>
+                                                <CalendarIcon className="absolute right-2 m-auto text-text-500"/>
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-auto p-0" align="start">
+                                            <Calendar
+                                                mode="single"
+                                                selected={newAssignmentDate}
+                                                onSelect={setNewAssignmentDate}
+                                                className="rounded-md bg-background-950 text-text-50"
+                                            />
+                                        </PopoverContent>
+                                    </Popover>
+
+                                    <div className="flex flex-col gap-2">
+                                        <p className="font-bold text-sm">Due hour (optional)</p>
+                                        <TimePicker date={newAssignmentTime} onChange={setNewAssignmentTime} />
+                                    </div>
+                                </div>
                             </div>
                             {
                                 newAssignment.title !== '' && newAssignmentDate &&
