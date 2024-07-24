@@ -20,7 +20,7 @@ export default function AssignmentEntry({title, dueDate, status, score, id} : {t
                         status? <CircleCheck /> : <Circle />
                     }
                     {
-                        status? <h1>Done</h1> : <h1>Todo</h1>
+                        status? <h1>Done</h1> : <h1>To do</h1>
                     }
                 </div>
 

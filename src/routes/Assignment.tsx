@@ -305,6 +305,12 @@ export default function Assignment() {
 
                             {
                                 // @ts-ignore
+                                moment(assignment?.dueDate, 'DD-MM-YYYY').isAfter(moment()) &&
+                                <Button className="bg-primary-700 hover:bg-primary-800 text-text-50 font-bold text-xl">Submit</Button>
+                            }
+
+                            {
+                                // @ts-ignore
                                 assignment?.submissions?.map(submission => {
                                     return (
                                         <div key={submission.id} className="flex flex-col gap-3">
@@ -329,11 +335,6 @@ export default function Assignment() {
                                 })
                             }
 
-                            {
-                                // @ts-ignore
-                                moment(assignment?.dueDate, 'DD-MM-YYYY').isAfter(moment()) &&
-                                <Button className="bg-primary-700 hover:bg-primary-800 text-text-50 font-bold text-xl">Submit</Button>
-                            }
                         </form>
                     </div>
                 </div>

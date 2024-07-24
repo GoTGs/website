@@ -258,7 +258,7 @@ export default function Assignments() {
 
                                         <Label htmlFor="todo" className="cursor-pointer border-y border-r border-text-300 rounded-r-md">
                                             <input onChange={handleFilterSelect} type="radio" value="todo" id="todo" name="filter" className="hidden" checked={filter === 'todo'} />
-                                            <div className="label-checked:bg-background-800 p-3 rounded-r-md hover:bg-background-700">Todo</div>
+                                            <div className="label-checked:bg-background-800 p-3 rounded-r-md hover:bg-background-700">To do</div>
                                         </Label>
                                 </div>
 
