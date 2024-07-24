@@ -172,7 +172,7 @@ export default function Members() {
 
                     <form onSubmit={handleAddMember} className="mt-4 flex w-full justify-center items-center">
                         <div className="flex flex-col w-[80%] relative">
-                            <Input onChange={(e) => setAddMemberEmail(e.target.value)} value={addMemberEmail} placeholder="Enter member email" className={`${addMemberEmail.length > 0 && !addMemberEmail.includes('@') && 'border-b-0 rounded-b-none'}`} /> 
+                            <Input onChange={(e) => {setAddMemberEmail(e.target.value); queryClient.invalidateQueries({queryKey: ['allUsers']})}} value={addMemberEmail} placeholder="Enter member email" className={`${addMemberEmail.length > 0 && !addMemberEmail.includes('@') && 'border-b-0 rounded-b-none'}`} /> 
 
                             <div className="relative w-full mb-3">
 
