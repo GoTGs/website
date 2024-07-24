@@ -87,5 +87,29 @@ export const assignmentAPI = {
     },
     deleteAssignment: async (assignmentId: string | null) => {
         return (await axios.delete(`/assignment/${assignmentId}/delete`, axiosConfigAssignment)).data;
+    },
+    editAssignment: async ({assignmentId, data}: {assignmentId: string | null, data: AssignmentEditDataType | null}) => {
+        const formData = new FormData();
+
+        formData.append('title', data?.title || '');
+        formData.append('description', data?.description || '');
+        formData.append('dueDate', data?.dueDate || '');
+        formData.append('links', data?.stringFiles?.join('\n')!);
+
+        for (let i = 0; i < data?.files?.length!; i++) {
+            // @ts-ignore
+            formData.append('files ' + i, data?.files![i]);
+        }
+
+        return (await axios.put(`/assignment/${assignmentId}/edit`, 
+            formData, 
+            {
+                ...axiosConfigAssignment,
+                headers: {
+                    ...axiosConfigAssignment.headers,
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
+        )).data
     }
 };

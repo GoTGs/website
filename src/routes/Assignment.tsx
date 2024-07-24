@@ -116,6 +116,20 @@ export default function Assignment() {
         }
     })
 
+    const editAssignmentMutation = useMutation({
+        mutationFn: assignmentAPI.editAssignment,
+        onError: (error) => {
+            toast({
+                // @ts-ignore
+                title: error.response.data.data,
+                variant: 'destructive',
+            })
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ['assignment', searchParams.get('assignmentId')]})
+        }
+    })
+
     useEffect(() => {
         if (!searchParams.has('assignmentId')) {
             navigate('/dashboard')
@@ -133,6 +147,12 @@ export default function Assignment() {
 
         setNewAssignmentDate(moment(assignment?.dueDate, 'DD-MM-YYYY').toDate())
     }, [assignment])
+
+    useEffect(() => {
+        if (editedAssignment) {
+            setEditedAssignment(prev => ({...prev, dueDate: moment(newAssignmentDate).format('DD-MM-YYYY')}))
+        }
+    }, [newAssignmentDate])
 
     const handleAddSubmission = (e: any) => {
         e.preventDefault()
@@ -171,8 +191,8 @@ export default function Assignment() {
             })
             return
         }
-        
-        setEditedAssignment(prev => ({...prev, dueDate: moment(newAssignmentDate).format('DD-MM-YYYY')}))
+
+        editAssignmentMutation.mutate({assignmentId: searchParams.get('assignmentId'), data: editedAssignment})
 
         setIsEditDialogOpen(false)
     }
@@ -311,7 +331,6 @@ export default function Assignment() {
 
                             {
                                 // @ts-ignore
-                                assignment?.submissions?.length == 0 &&
                                 moment(assignment?.dueDate, 'DD-MM-YYYY').isAfter(moment()) &&
                                 <Button className="bg-primary-700 hover:bg-primary-800 text-text-50 font-bold text-xl">Submit</Button>
                             }
@@ -329,10 +348,10 @@ export default function Assignment() {
                     <form onSubmit={handleEditAssignment} className="mt-4 flex w-full justify-center">
                         <div className="w-[90%] flex flex-col gap-5">
                             <div className="w-full flex flex-col gap-3">
-                                <Input onChange={(e) => {setEditedAssignment(prev => ({...prev, title: e.target.value}))}} value={editedAssignment?.title} placeholder="Enter assignment title" name="title" className="text-text-50" />
+                                <Input onChange={(e) => {setEditedAssignment(prev => ({...prev, title: e.target.value}))}} value={editedAssignment?.title} placeholder="*Enter assignment title" name="title" className="text-text-50" />
 
                                 <div>
-                                    <Textarea onChange={(e) => {setEditedAssignment(prev => ({...prev, description: e.target.value}))}} name="description" value={editedAssignment?.description} placeholder="Enter assignment discription" className="resize-none text-text-50 text-md border-b-none rounded-b-none" rows={12}/>
+                                    <Textarea onChange={(e) => {setEditedAssignment(prev => ({...prev, description: e.target.value}))}} name="description" value={editedAssignment?.description} placeholder="Enter assignment discription (optional)" className="resize-none text-text-50 text-md border-b-none rounded-b-none" rows={12}/>
 
                                     <div className={`bg-background-800 border-white border-l border-r border-b rounded-b-md relative text-text-50 p-4 ${isDragActiveEdit? 'bg-background-700' : ''}`} {...getRootPropsEdit()}>
                                         <input {...getInputPropsEdit()} />
@@ -381,7 +400,7 @@ export default function Assignment() {
                                                 {
                                                 newAssignmentDate? 
                                                 <span className="absolute left-2 text-text-50 font-semibold">{newAssignmentDate.toDateString()}</span>:
-                                                <span className="absolute left-2 text-text-500 font-semibold">Pick a due date</span>
+                                                <span className="absolute left-2 text-text-500 font-semibold">*Pick a due date</span>
                                             }
 
                                             <CalendarIcon className="absolute right-2 m-auto text-text-500"/>
@@ -397,7 +416,11 @@ export default function Assignment() {
                                     </PopoverContent>
                                 </Popover>
                             </div>
-                            <Button type="submit" className="bg-primary-700 text-text-50 hover:bg-primary-800 font-semibold w-full">Edit Assignment</Button>
+
+                            {
+                                editedAssignment?.title && newAssignmentDate &&
+                                <Button type="submit" className="bg-primary-700 text-text-50 hover:bg-primary-800 font-semibold w-full">Edit Assignment</Button>
+                            }
                         </div>
                     </form>
                 </DialogContent>
