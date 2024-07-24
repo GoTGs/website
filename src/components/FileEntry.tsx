@@ -1,5 +1,15 @@
-import { Trash2, File } from "lucide-react"
+import {
+    Trash2,
+    FileIcon,
+    FileAudioIcon,
+    FileVideoIcon,
+    ImageIcon,
+    FileArchiveIcon,
+    FileTextIcon,
+} from 'lucide-react';
 import { Button } from "./ui/button"
+import mime from 'mime'
+
 
 export default function FileEntry({ fileName, ondelete, fileLink } : {fileName: string | undefined, ondelete?: (e?: any) => void, fileLink?: string}) {
     const handleFileDownload = () => {
@@ -8,10 +18,41 @@ export default function FileEntry({ fileName, ondelete, fileLink } : {fileName: 
         }
     }
 
+    const commonMimeTypes = {
+        'audio/*': <FileAudioIcon className="left-0" />,
+        'video/*': <FileVideoIcon className="left-0" />,
+        'image/*': <ImageIcon className="left-0" />,
+        'application/zip': <FileArchiveIcon className="left-0" />,
+        'application/x-rar-compressed': <FileArchiveIcon className="left-0" />,
+        'text/plain': <FileTextIcon className="left-0" />,
+    };
+
+    const getFileIcon = (mimeType: any) => {
+        // @ts-ignore
+        const specificIcon = commonMimeTypes[mimeType];
+        if (specificIcon) {
+            return specificIcon;
+        }
+
+        const [type] = mimeType.split('/');
+        switch (type) {
+            case 'audio':
+            return <FileAudioIcon className="left-0" />;
+            case 'video':
+            return <FileVideoIcon className="left-0" />;
+            case 'image':
+            return <ImageIcon className="left-0" />;
+            default:
+            return <FileIcon className="left-0" />; // Default icon
+        }
+    };
+
     return (
         <>
             <div onClick={handleFileDownload} className={`bg-background-700 flex text-text-50 font-semibold p-2 gap-5 items-center rounded-md relative ${fileLink? 'hover:bg-background-800 cursor-pointer': ''}`}>
-                <File className="left-0"/>
+                {
+                    getFileIcon(mime.getType(fileName || ''))
+                }
 
                 <p className="grow">{ fileName }</p>
 

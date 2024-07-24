@@ -276,6 +276,7 @@ export default function Assignment() {
 
                             <div className="flex flex-col gap-1">
                                 {
+                                    !isLoadingAssignment?
                                     assignment?.files.map((item: string, index: number) => {
                                         let fileName = item.split('/').at(-1)
 
@@ -286,7 +287,8 @@ export default function Assignment() {
                                         }
 
                                         return <FileEntry key={index} fileName={fileName} fileLink={item}/>
-                                    })
+                                    }):
+                                    <Skeleton className="w-full h-6 bg-[#88888850] rounded-lg" />
                                 }
                             </div>
                         </div>
@@ -327,6 +329,7 @@ export default function Assignment() {
                             }
 
                             {
+                                !isLoadingAssignment?
                                 // @ts-ignore
                                 assignment?.submissions?.map(submission => {
                                     return (
@@ -349,7 +352,8 @@ export default function Assignment() {
                                             </div>
                                         </div>
                                     )
-                                })
+                                }):
+                                <Skeleton className="w-full h-6 bg-[#88888850] rounded-lg" />
                             }
 
                         </form>
