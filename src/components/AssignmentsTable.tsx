@@ -16,7 +16,7 @@ export default function AssignmentsTable({ className, assignments } : {className
                 {
                     assignments?.map(assignment => (
                         // @ts-ignore
-                        <AssignmentEntry key={assignment.id} title={assignment.title} dueDate={moment(assignment.dueDate, 'DD-MM-YYYY HH:mm:ss').format("DD-MM-YY")} status={assignment.completed} score="Not Graded" id={assignment.id} />
+                        <AssignmentEntry key={assignment.id} title={assignment.title} dueDate={moment(assignment.dueDate, 'DD-MM-YYYY HH:mm:ss').format("DD-MM-YY")} status={assignment.completed} score={assignment.grade? assignment.grade.grade + '%': 'Not graded'} id={assignment.id} />
                     ))
                 }
             </div>

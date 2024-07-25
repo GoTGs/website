@@ -11,7 +11,7 @@ import moment from "moment"
 
 import FileEntry from "@/components/FileEntry"
 
-import { CalendarIcon } from "lucide-react"
+import { CalendarIcon, GraduationCap } from "lucide-react"
 
 import {
     Breadcrumb,
@@ -135,7 +135,7 @@ export default function Assignment() {
     })
 
     useEffect(() => {
-        if (!searchParams.has('assignmentId')) {
+        if (!searchParams.has('assignmentId') || !searchParams.has('roomId')) {
             navigate('/dashboard')
         }
     }, [])
@@ -178,6 +178,7 @@ export default function Assignment() {
 
         addSubmissionMutation.mutate({assignmentId: searchParams.get('assignmentId'), data: {text, files: uploadedFiles}})
         setUploadedFiles([])
+        setText('')
     }
 
     const deleteAssignment = () => {
@@ -241,7 +242,7 @@ export default function Assignment() {
                             </BreadcrumbItem>
                             <BreadcrumbSeparator><p className="text-2xl -translate-y-1 text-text-50">/</p></BreadcrumbSeparator>
                             <BreadcrumbItem>
-                                {!isLoadingClassroom?
+                                {!isLoadingAssignment?
                                     <BreadcrumbPage className="text-lg text-text-50 font-semibold px-2">{assignment?.title}</BreadcrumbPage>:
                                     <Skeleton className="w-[100px] h-6 bg-[#88888850] rounded-lg" />
                                 }
@@ -249,10 +250,14 @@ export default function Assignment() {
                         </BreadcrumbList>
                     </Breadcrumb>
 
-                    <div className="right-0 flex items-center absolute top-16 gap-3">
+                    <div className="right-0 flex items-center absolute top-16 gap-3 max-md:flex-col">
                         {
                             user?.role === 'admin' || user?.role === 'teacher'?
                             <Button onClick={() => {setIsEditDialogOpen(true)}} className="text-text-50 px-6 py-4 bg-primary-700 hover:bg-primary-800">Edit</Button>: null
+                        }
+                        {
+                            user?.role === 'admin' || user?.role === 'teacher'?
+                            <Button onClick={() => {navigate(`/grade?roomId=${searchParams.get('roomId')}&assignmentId=${searchParams.get('assignmentId')}`)}} className="text-text-50 px-6 py-4 bg-primary-700 hover:bg-primary-800">Grade</Button>: null
                         }
                         {
                             !isLoadingUser && user?.role === 'admin' || user?.role === 'teacher'? 
@@ -276,19 +281,10 @@ export default function Assignment() {
                     </div>
 
                     <div className="flex gap-10 max-lg:flex-col">
-                        <div className="flex flex-col text-text-50 w-full leading-8 gap-5">
+                        <div className="flex flex-col text-text-50 w-full leading-8 gap-5 max-md:mt-20">
                             {
                                 !isLoadingAssignment?
                                 <p className="text-justify">{assignment?.description}</p>:
-                                <Skeleton className="w-full h-6 bg-[#88888850] rounded-lg" />
-                            }
-
-                            {
-                                !isLoadingAssignment?
-                                <span className="flex gap-3">
-                                    <CalendarIcon /> 
-                                    <p className="text-justify">{assignment?.dueDate}</p>
-                                </span>:
                                 <Skeleton className="w-full h-6 bg-[#88888850] rounded-lg" />
                             }
 
@@ -303,12 +299,56 @@ export default function Assignment() {
                                         } else {
                                             fileName = fileName?.replaceAll("%20", " ")
                                         }
-
+                                        
                                         return <FileEntry key={index} fileName={fileName} fileLink={item}/>
                                     }):
                                     <Skeleton className="w-full h-6 bg-[#88888850] rounded-lg" />
                                 }
                             </div>
+
+                            {
+                                !isLoadingAssignment?
+                                <span className="flex gap-3">
+                                    <CalendarIcon /> 
+                                    <p className="text-justify">{assignment?.dueDate}</p>
+                                </span>:
+                                <Skeleton className="w-full h-6 bg-[#88888850] rounded-lg" />
+                            }
+
+                            <span className="w-full h-[1px] bg-text-300 mt-3 mb-3"></span>
+
+                            {
+                                !isLoadingAssignment?
+                                    // @ts-ignore
+                                    assignment?.grade !== undefined?
+                                        <div className="flex flex-col gap-1">
+                                            <p className="text-2xl">Grade</p>
+                                            <span className="flex gap-2">
+                                                <GraduationCap />  
+                                                <p className="text-justify">{
+                                                    // @ts-ignore
+                                                    assignment?.grade.grade
+                                                }%</p>
+                                            </span>
+                                        </div>:
+                                    null:
+                                <Skeleton className="w-full h-6 bg-[#88888850] rounded-lg" />
+                            }
+
+                            {
+                                !isLoadingAssignment?
+                                    // @ts-ignore
+                                    assignment?.grade !== undefined?
+                                        <span className="flex flex-col gap-1">
+                                            <p className="text-2xl">Feedback</p>
+                                            <p className="text-justify">{
+                                                // @ts-ignore
+                                                assignment?.grade.feedback
+                                            }</p>
+                                        </span>:
+                                    null:
+                                <Skeleton className="w-full h-6 bg-[#88888850] rounded-lg" />
+                            }
                         </div>
 
                         <form onSubmit={handleAddSubmission} className="flex flex-col w-full gap-2 mb-5">
@@ -346,33 +386,39 @@ export default function Assignment() {
                                 <Button className="bg-primary-700 hover:bg-primary-800 text-text-50 font-bold text-xl">Submit</Button>
                             }
 
-                            {
-                                !isLoadingAssignment?
-                                // @ts-ignore
-                                assignment?.submissions?.map(submission => {
-                                    return (
-                                        <div key={submission.id} className="flex flex-col gap-3">
-                                            <p className="text-text-50 max-w-[90ch]">{submission.text}</p>
-                                            <div className="flex flex-col gap-1">
+                            <div className="flex flex-col gap-5 mt-3">
+                                {
+                                    !isLoadingAssignment?
+                                    // @ts-ignore
+                                    assignment?.submissions?.map(submission => {
+                                        return (
+                                            <div key={submission.id} className="flex flex-col gap-3">
+                                                <p className="text-text-50 max-w-[90ch]">{submission.text}</p>
                                                 {
-                                                    submission?.file_links.map((item: string, index: number) => {
-                                                        let fileName = item.split('/').at(-1)
+                                                    submission?.file_links.length > 0 &&
+                                                    <div className="flex flex-col gap-1">
+                                                        {
+                                                            submission?.file_links.map((item: string, index: number) => {
+                                                                let fileName = item.split('/').at(-1)
 
-                                                        if(item.includes('-')) {
-                                                            fileName = fileName?.split('-').slice(1).join('-').replaceAll('%20', ' ')
-                                                        } else {
-                                                            fileName = fileName?.replaceAll("%20", " ")
+                                                                if(item.includes('-')) {
+                                                                    fileName = fileName?.split('-').slice(1).join('-').replaceAll('%20', ' ')
+                                                                } else {
+                                                                    fileName = fileName?.replaceAll("%20", " ")
+                                                                }
+
+                                                                return <FileEntry key={index} fileName={fileName} fileLink={item}/>
+                                                            })
                                                         }
-
-                                                        return <FileEntry key={index} fileName={fileName} fileLink={item}/>
-                                                    })
+                                                    </div>
                                                 }
+                                                <span className="w-full h-[1px] bg-text-300"></span>
                                             </div>
-                                        </div>
-                                    )
-                                }):
-                                <Skeleton className="w-full h-6 bg-[#88888850] rounded-lg" />
-                            }
+                                        )
+                                    }):
+                                    <Skeleton className="w-full h-6 bg-[#88888850] rounded-lg" />
+                                }
+                            </div>
 
                         </form>
                     </div>
@@ -434,7 +480,7 @@ export default function Assignment() {
                                     </div>
                                 }
 
-                                <div className="flex flex-col gap-5 justify-center items-start">
+                                <div className="flex flex-col gap-5 justify-center items-start mt-3">
                                     <Popover>
                                         <PopoverTrigger asChild>
                                             <Button variant="outline" className="relative flex justify-center w-1/3">

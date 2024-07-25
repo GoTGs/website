@@ -37,6 +37,13 @@ export type AssignmentEditDataType = {
     stringFiles?: string[]
 }
 
+export type GradeSubmissionDataType = {
+    id: number,
+    files?: string[],
+    submission_time: string,
+    text: string,
+}
+
 export const assignmentAPI = {
     getAssignments: async (classroomId: string | null) => {
         return (await axios.get<AssignmentDataType[]>(`/assignment/classroom/${classroomId}/get/all`, axiosConfigAssignment)).data;
@@ -111,5 +118,17 @@ export const assignmentAPI = {
                 }
             }
         )).data
-    }
+    },
+    getAllSubmissions: async (assignmentId: string | null) => {
+        return (await axios.get<{userId:string, email: string, firstName: string, grade?: number, lastName: string, submission: GradeSubmissionDataType}[]>(`/assignment/${assignmentId}/submission/get/all`, axiosConfigAssignment)).data;
+    },
+    addGrade: async ({assignmentId, userId, grade, feedback}: {assignmentId: string | null, userId: string | undefined, grade: number, feedback: string}) => {
+        return (await axios.post(`/assignment/${assignmentId}/user/${userId}/grade`, {grade, feedback}, axiosConfigAssignment)).data;
+    },
+    deleteGrade: async (gradeId: string | null) => {
+        return (await axios.delete(`/grade/${gradeId}/delete`, axiosConfigAssignment)).data;
+    },
+    editGrade: async ({gradeId, grade, feedback}: {gradeId: string | null, grade: number | undefined, feedback: string | undefined}) => {
+        return (await axios.put(`/grade/${gradeId}/edit`, {grade, feedback}, axiosConfigAssignment)).data;
+    },
 };

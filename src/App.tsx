@@ -17,6 +17,7 @@ import Assignment from "./routes/Assignment"
 import Profile from "./routes/Profile"
 import Members from "./routes/Members"
 import Users from "./routes/Users"
+import Grade from "./routes/Grade"
 
 const queryClient = new QueryClient()
 
@@ -32,6 +33,7 @@ function App() {
     { path: '/profile', element: <Protected> <Profile /> </Protected>},
     { path: '/members', element: <Protected> <Members /> </Protected>},
     { path: '/users', element: <Protected> <Users /> </Protected>},
+    { path: '/grade', element: <Protected> <Grade /> </Protected>},
   ])
 
   return (
