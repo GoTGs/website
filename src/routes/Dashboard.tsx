@@ -38,7 +38,7 @@ export default function Dashboard() {
         queryFn: userAPI.getUser,
     })
 
-    const {data: classrooms, isLoading: isLoadingClassrooms } = useQuery({
+    const {data: classrooms, isLoading: isLoadingClassrooms, error: errorClassrom } = useQuery({
         queryKey: ['classrooms'],
         queryFn: classroomAPI.getUserClassrooms,
     })
@@ -53,12 +53,22 @@ export default function Dashboard() {
     useEffect(() => {
         if (errorUser) {
             // @ts-ignore
-            if (error.response.status === 401) {
+            if (errorUser.response.status === 401) {
                 localStorage.removeItem('token')
                 navigate('/')
             }
         }
     }, [errorUser])
+
+    useEffect(() => {
+        if (errorClassrom) {
+            // @ts-ignore
+            if (errorClassrom.response.status === 401) {
+                localStorage.removeItem('token')
+                navigate('/')
+            }
+        }
+    }, [errorClassrom])
 
     const handleCreateClassroom = async (e: any) => {
         e.preventDefault()

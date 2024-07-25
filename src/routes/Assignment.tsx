@@ -320,7 +320,7 @@ export default function Assignment() {
                             {
                                 !isLoadingAssignment?
                                     // @ts-ignore
-                                    assignment?.grade !== undefined || assignment?.grade.grade > 100 || assignment?.grade.grade < 0?
+                                    assignment?.grade?
                                         <div className="flex flex-col gap-1">
                                             <p className="text-2xl">Grade</p>
                                             <span className="flex gap-2">
@@ -338,7 +338,7 @@ export default function Assignment() {
                             {
                                 !isLoadingAssignment?
                                     // @ts-ignore
-                                    assignment?.grade !== undefined || assignment?.grade.grade > 100 || assignment?.grade.grade < 0?
+                                    assignment?.grade?
                                         <span className="flex flex-col gap-1">
                                             <p className="text-2xl">Feedback</p>
                                             <p className="text-justify">{
