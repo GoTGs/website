@@ -28,7 +28,7 @@ export default function Home() {
                     </div>
                 </div>
 
-                <div className="min-h-screen min-w-screen relative flex justify-center items-center flex-col gap-5">
+                <div className="min-h-screen min-w-screen flex justify-center items-center flex-col gap-5">
                     <h1 className="text-8xl font-bold z-20 text-text-200 text-center">Submit, Track, and Excel with Ease</h1>
 
                     <div className="z-20 relative after:absolute after:top-0 after:left-0 after:w-[110%] after:h-[110%] after:-translate-x-2 after:-translate-y-[2px] after:bg-accent-200 after:z-[-1] after:blur-xl">
