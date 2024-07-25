@@ -374,7 +374,7 @@ export default function Assignment() {
                                 <div className="flex flex-col gap-1">
                                     {
                                         uploadedFiles.map((item, index) => {
-                                            return <FileEntry fileName={item.name} ondelete={() => {setUploadedFiles(prev => prev.filter((_, i) => i !== index))}}/>
+                                            return <FileEntry fileName={item.name} ondelete={() => {setUploadedFiles(prev => prev.filter((_, i) => i !== index))}} file={uploadedFiles[index]}/>
                                         })
                                     }
                                 </div>
