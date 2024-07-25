@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback, useRef } from "react"
 
 import { useSearchParams, useNavigate } from "react-router-dom"
 import { useDropzone } from 'react-dropzone'
@@ -45,6 +45,7 @@ export default function Assignment() {
     const queryClient = useQueryClient()
 
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
+    const [base64Files, setBase64Files] = useState<{base64String: string, fileName: string}[]>([])
     const [text, setText] = useState<string>('')
     const [isConfirmDeleteAssignmentDialogOpen, setIsConfirmDeleteAssignmentDialogOpen] = useState<boolean>(false)
 
@@ -53,6 +54,8 @@ export default function Assignment() {
     const [newAssignmentDate, setNewAssignmentDate] = useState<Date | undefined>(undefined)
     const [editAssignmentTime, setEditAssignmentTime] = useState<Date | undefined>(undefined)
     const [editedAssignment, setEditedAssignment] = useState<AssignmentEditDataType | null>(null)
+
+    const hasRun = useRef<boolean>(false)
 
     const {data: classsroom, isLoading: isLoadingClassroom} = useQuery({
         queryKey: ['classroom', searchParams.get('assignmentId')],
@@ -69,13 +72,39 @@ export default function Assignment() {
         queryFn: userAPI.getUser,
     })
 
+    const base64ToFile = (base64String: string, fileName: string, mimeType: string) => {
+        const byteCharacters = atob(base64String);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+
+        const blob = new Blob([byteArray], { type: mimeType });
+
+        const file = new File([blob], fileName, { type: mimeType });
+
+        return file;
+    }
+
     const onDrop  = useCallback((file: any) => {
         for (let i = 0; i < file.length; i++) {
             const element = file[i]; 
 
             setUploadedFiles(prev => { return [...prev, element] })
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // @ts-ignore
+                const base64String = e.target.result.split(',')[1];
+                setBase64Files(prev => ([...prev, {base64String, fileName: element.name}]));
+            };
+            reader.readAsDataURL(element);
         }
     }, [])
+
+    useEffect(() => {
+    }, [uploadedFiles])
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({onDrop})
 
@@ -149,10 +178,28 @@ export default function Assignment() {
             stringFiles: assignment?.files
         })
 
+        
+        if(!hasRun.current && assignment !== undefined && assignment?.id !== undefined && localStorage.getItem(assignment?.id)) {
+            // @ts-ignore
+            setText(JSON.parse(localStorage.getItem(assignment?.id)).text)
+            
+            // @ts-ignore
+            for (let i = 0; i < JSON.parse(localStorage.getItem(assignment?.id)).files.length; i++) {
+                // @ts-ignore
+                const element = JSON.parse(localStorage.getItem(assignment?.id)).files[i].base64String;
+                // @ts-ignore
+                setUploadedFiles(prev => { return [...prev, base64ToFile(element, JSON.parse(localStorage.getItem(assignment?.id)).files[i].fileName)] })
+            }
+
+            // @ts-ignore
+            hasRun.current = true
+        }
+        
         setNewAssignmentDate(moment(assignment?.dueDate, 'DD-MM-YYYY').toDate())
         setEditAssignmentTime(moment(moment(assignment?.dueDate, 'DD-MM-YYYY HH:mm:ss').format('HH:mm:ss'), 'HH:mm:ss').toDate())
     }, [assignment])
-
+    
+    
     useEffect(() => {
         if (editedAssignment) {
             setEditedAssignment(prev => ({...prev, dueDate: moment(newAssignmentDate).format('DD-MM-YYYY')}))
@@ -165,6 +212,13 @@ export default function Assignment() {
         }
     }, [editAssignmentTime])
 
+    useEffect(() => {
+        if(text !== '' || uploadedFiles.length > 0) {
+            // @ts-ignore
+            localStorage.setItem(assignment?.id, JSON.stringify({"text": text, "files": base64Files}))
+        }
+    }, [base64Files, text])
+
     const handleAddSubmission = (e: any) => {
         e.preventDefault()
 
@@ -175,6 +229,9 @@ export default function Assignment() {
             })
             return
         }
+
+        // @ts-ignore
+        localStorage.removeItem(assignment?.id)
 
         addSubmissionMutation.mutate({assignmentId: searchParams.get('assignmentId'), data: {text, files: uploadedFiles}})
         setUploadedFiles([])
@@ -354,7 +411,7 @@ export default function Assignment() {
                         <form onSubmit={handleAddSubmission} className="flex flex-col w-full gap-2 mb-5">
                             <div className="flex flex-col w-full">
                                 <div className="flex flex-col w-full">
-                                    <Textarea onChange={(e) => setText(e.target.value)} placeholder="Enter your text" className="resize-none text-text-50 text-lg bg-background-900 rounded-b-none" rows={5}/>
+                                    <Textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="Enter your text" className="resize-none text-text-50 text-lg bg-background-900 rounded-b-none" rows={5}/>
                                 </div>
 
                                 <div className={`bg-background-800 border-white border-l border-r border-b rounded-b-md relative text-text-50 p-4 ${isDragActive? 'bg-background-700' : ''}`} {...getRootProps()}>

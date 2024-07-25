@@ -79,7 +79,7 @@ export default function FileEntry({ fileName, ondelete, fileLink, file } : {file
                 {
                     !file &&
                     isMouseOverFile &&
-                    <div className='w-full max-h-[50vh] h-[50vh] absolute bottom-0 -translate-x-[10px] translate-y-[50vh] z-20 mb-5'>
+                    <div className='w-full h-fit absolute bottom-0 -translate-x-[10px] z-20 mb-5'>
                         {
                             mime.getType(fileName || '') === 'application/pdf' ? (
                                 <object
@@ -105,7 +105,7 @@ export default function FileEntry({ fileName, ondelete, fileLink, file } : {file
                 {
                     file &&
                     isMouseOverFile &&
-                    <div className='w-full max-h-[50vh] h-[50vh] absolute bottom-0 -translate-x-[10px] translate-y-[50vh] z-20 mb-5'>
+                    <div className='w-full h-fit absolute bottom-0 -translate-x-[10px] z-20 mb-5'>
                         {
                             mime.getType(fileName || '') === 'application/pdf' ? (
                                 // @ts-ignore
