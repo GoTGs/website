@@ -7,7 +7,7 @@ export type AIResponseDataType = {
 }
 
 export const aiAPI = {
-    getRecommendation: async (keyword: string) => {
-        return (await axios.post<AIResponseDataType>('/assignment/recommend', {keyword}, axiosConfigAI)).data;
+    getRecommendation: async (keywords: string) => {
+        return (await axios.post<AIResponseDataType>('/assignment/recommend', {keywords}, axiosConfigAI)).data;
     }
 }

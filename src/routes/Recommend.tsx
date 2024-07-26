@@ -28,7 +28,8 @@ export default function Recommend() {
         mutationFn: aiAPI.getRecommendation,
         onSuccess: (res) => {
             // @ts-ignore
-            setResponse(res.data.response)
+            setResponse(res.response)
+            // console.log(res)
         }
     })
 
@@ -72,7 +73,7 @@ export default function Recommend() {
 
                             {
                                 !aiMutation.isPending?
-                                <p className="text-justify">{response}</p>:
+                                <p className="text-justify text-text-50 mt-5 mb-5">{response}</p>:
                                 <Skeleton className="w-full h-6 bg-[#88888850] rounded-lg" />
                             }
                     </div>
