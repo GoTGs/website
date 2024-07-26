@@ -38,6 +38,7 @@ jobs:
           VITE_BACKEND_URL_USER: https://gotgs-user-hbc6ebgkfxd6amev.polandcentral-01.azurewebsites.net
           VITE_BACKEND_URL_CLASSROOM: https://gots-classroom-fxgkgsd2hkb4ffcz.polandcentral-01.azurewebsites.net
           VITE_BACKEND_URL_ASSIGNMENT: https://gotgs-assignment-aabxaec4epfbhtc6.polandcentral-01.azurewebsites.net
+          VITE_BACKEND_URL_AI: http://ai-service-gogts.polandcentral.cloudapp.azure.com:8004
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
