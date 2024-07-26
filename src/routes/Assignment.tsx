@@ -38,6 +38,21 @@ import { TimePicker } from "@/components/ui/datetime"
 
 import { Bars } from 'react-loader-spinner'
 
+export const base64ToFile = (base64String: string, fileName: string, mimeType: string) => {
+    const byteCharacters = atob(base64String);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+
+    const blob = new Blob([byteArray], { type: mimeType });
+
+    const file = new File([blob], fileName, { type: mimeType });
+
+    return file;
+}
+
 export default function Assignment() {
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
@@ -45,7 +60,7 @@ export default function Assignment() {
     const queryClient = useQueryClient()
 
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
-    const [base64Files, setBase64Files] = useState<{base64String: string, fileName: string}[]>([])
+    const [base64Files, setBase64Files] = useState<{base64String: string, fileName: string, mimeType: string}[]>([])
     const [text, setText] = useState<string>('')
     const [isConfirmDeleteAssignmentDialogOpen, setIsConfirmDeleteAssignmentDialogOpen] = useState<boolean>(false)
 
@@ -72,21 +87,6 @@ export default function Assignment() {
         queryFn: userAPI.getUser,
     })
 
-    const base64ToFile = (base64String: string, fileName: string, mimeType: string) => {
-        const byteCharacters = atob(base64String);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-
-        const blob = new Blob([byteArray], { type: mimeType });
-
-        const file = new File([blob], fileName, { type: mimeType });
-
-        return file;
-    }
-
     const onDrop  = useCallback((file: any) => {
         for (let i = 0; i < file.length; i++) {
             const element = file[i]; 
@@ -97,7 +97,7 @@ export default function Assignment() {
             reader.onload = function(e) {
                 // @ts-ignore
                 const base64String = e.target.result.split(',')[1];
-                setBase64Files(prev => ([...prev, {base64String, fileName: element.name}]));
+                setBase64Files(prev => ([...prev, {base64String, fileName: element.name, mimeType: element.type}]));
             };
             reader.readAsDataURL(element);
         }
@@ -179,6 +179,7 @@ export default function Assignment() {
         })
 
         
+        // @ts-ignore
         if(!hasRun.current && assignment !== undefined && assignment?.id !== undefined && localStorage.getItem(assignment?.id)) {
             // @ts-ignore
             setText(JSON.parse(localStorage.getItem(assignment?.id)).text)
@@ -188,7 +189,7 @@ export default function Assignment() {
                 // @ts-ignore
                 const element = JSON.parse(localStorage.getItem(assignment?.id)).files[i].base64String;
                 // @ts-ignore
-                setUploadedFiles(prev => { return [...prev, base64ToFile(element, JSON.parse(localStorage.getItem(assignment?.id)).files[i].fileName)] })
+                setUploadedFiles(prev => { return [...prev, base64ToFile(element, JSON.parse(localStorage.getItem(assignment?.id)).files[i].fileName, JSON.parse(localStorage.getItem(assignment?.id)).mimeType)] })
             }
 
             // @ts-ignore

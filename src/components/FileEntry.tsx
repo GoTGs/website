@@ -67,7 +67,7 @@ export default function FileEntry({ fileName, ondelete, fileLink, file } : {file
         <>
             <div onMouseEnter={() => {setIsMouseOverFile(true)}} onMouseLeave={() => {setIsMouseOverFile(false)}} onClick={handleFileDownload} className={`bg-background-700 flex text-text-50 font-semibold p-2 gap-5 items-center rounded-md relative ${fileLink? 'hover:bg-background-800 cursor-pointer': ''}`}>
                 {
-                    getFileIcon(mime.getType(fileName || ''))
+                    getFileIcon(mime.getType(fileName || '') != null && mime.getType(fileName || ''))
                 }
 
                 <p className="grow">{ fileName }</p>
@@ -79,9 +79,9 @@ export default function FileEntry({ fileName, ondelete, fileLink, file } : {file
                 {
                     !file &&
                     isMouseOverFile &&
-                    <div className='w-full h-fit absolute bottom-0 -translate-x-[10px] z-20 mb-5'>
+                    <div className='w-full absolute top-0 -translate-x-[10px] z-20 mb-5 translate-y-10'>
                         {
-                            mime.getType(fileName || '') === 'application/pdf' ? (
+                            mime.getType(fileName || '') != null && mime.getType(fileName || '') === 'application/pdf' ? (
                                 <object
                                     data={fileLink}
                                     width="100%"
@@ -90,7 +90,7 @@ export default function FileEntry({ fileName, ondelete, fileLink, file } : {file
                                 ></object>
                             ) :
                             // @ts-ignore
-                            mime.getType(fileName || '').startsWith('image/') ? (
+                            mime.getType(fileName || '') != null && mime.getType(fileName || '').startsWith('image/') ? (
                                 <img
                                     src={fileLink}
                                     alt="File Preview"
@@ -105,9 +105,9 @@ export default function FileEntry({ fileName, ondelete, fileLink, file } : {file
                 {
                     file &&
                     isMouseOverFile &&
-                    <div className='w-full h-fit absolute bottom-0 -translate-x-[10px] z-20 mb-5'>
+                    <div className='w-full absolute top-0 -translate-x-[10px] z-20 mb-5 translate-y-10'>
                         {
-                            mime.getType(fileName || '') === 'application/pdf' ? (
+                            mime.getType(fileName || '') != null && mime.getType(fileName || '') === 'application/pdf' ? (
                                 // @ts-ignore
                                 <object data={filePreview}
                                     width="100%"
@@ -116,7 +116,7 @@ export default function FileEntry({ fileName, ondelete, fileLink, file } : {file
                                 ></object>
                             ) :
                             // @ts-ignore
-                            mime.getType(fileName || '').startsWith('image/') ? (
+                            mime.getType(fileName || '') != null && mime.getType(fileName || '').startsWith('image/') ? (
                                 // @ts-ignore
                                 <img src={filePreview}
                                     alt="File Preview"

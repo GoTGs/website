@@ -6,6 +6,7 @@ import moment from "moment"
 
 import AssignmentsTable from "@/components/AssignmentsTable"
 import FileEntry from "@/components/FileEntry"
+import { base64ToFile } from "./Assignment"
 
 import { classroomAPI } from "@/apis/classroomAPI"
 import { userAPI } from "@/apis/userAPI"
@@ -138,6 +139,24 @@ export default function Assignments() {
         }
     })
 
+    const bulckSubmissionMutation = useMutation({
+        mutationFn: assignmentAPI.addSubmission,
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ['assignments', searchParams.get('id') ]})
+            toast({
+                title: 'Bulk submission',
+                description: 'The bulk submission has been submitted',
+            })
+        },
+        onError: (error) => {
+            toast({
+                // @ts-ignore
+                title: error.response.data.data,
+                variant: 'destructive',
+            })
+        }
+    })
+
     useEffect(() => {
         if (!searchParams.has('id')) {
             navigate('/dashboard')
@@ -221,10 +240,37 @@ export default function Assignments() {
         setIsRenameRoomDialogOpened(false)
     }
 
+    const bulckSubmissionAssignments = assignments?.filter((assignment) => {
+        // @ts-ignore
+        if(localStorage.getItem(assignment?.id)) {
+            return assignment
+        }
+    })
+
+    const handleBulkSubmission = () => {
+        bulckSubmissionAssignments?.map(item => {
+            // @ts-ignore
+            const text = JSON.parse(localStorage.getItem(item?.id)).text
+            // @ts-ignore
+            const base64File = JSON.parse(localStorage.getItem(item?.id)).files
+
+            
+            const files = base64File.map((file: any) => {
+                return base64ToFile(file.base64String, file.fileName, file.mimeType)
+            })
+            
+            // @ts-ignore
+            bulckSubmissionMutation.mutate({assignmentId: item?.id, data:{text, files}})
+
+            // @ts-ignore
+            localStorage.removeItem(item?.id)
+        })
+    }
+
     return (
         <>
             {
-                createAssignmentMutataion.isPending || renameRoomMutation.isPending || deleteRoomMutation.isPending?
+                createAssignmentMutataion.isPending || renameRoomMutation.isPending || deleteRoomMutation.isPending || bulckSubmissionMutation.isPending?
                 <div className="absolute top-0 left-0 right-0 bottom-0 z-30 bg-[#ffffff20] flex justify-center items-center">
                     <Bars
                         height="80"
@@ -325,6 +371,14 @@ export default function Assignments() {
                         <Skeleton className="w-full h-96 bg-[#88888850] rounded-lg" />
                     }
                 </div>
+
+                {   
+                    // @ts-ignore
+                    bulckSubmissionAssignments?.length > 0 &&
+                    <div className="flex w-full justify-center items-center">
+                        <Button onClick={handleBulkSubmission} className="bg-primary-700 text-text-50 hover:bg-primary-800 font-semibold w-[40%]">You have {bulckSubmissionAssignments?.length} unsubmited assignemnt</Button>
+                    </div>
+                }
             </div>
 
             <Dialog open={isRenameRoomDialogOpened} onOpenChange={setIsRenameRoomDialogOpened}>
