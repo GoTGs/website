@@ -23,3 +23,10 @@ export const axiosConfigAssignment = {
         'Authorization': 'Bearer ' + localStorage.getItem('token')
     }
 }
+
+export const axiosConfigAI = {
+    baseURL: import.meta.env.VITE_BACKEND_URL_AI,
+    headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+    }
+}
